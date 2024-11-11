@@ -1,7 +1,7 @@
 // imageaos_test.cpp
 
 #include <gtest/gtest.h>
-#include "imageaos.hpp"
+#include "imgaos/imageaos.hpp"
 
 // Test if `cutfreq` correctly identifies and removes infrequent colors
 TEST(ImageAOSTest, CutFreq_RemovesInfrequentColors) {
