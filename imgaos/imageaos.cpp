@@ -5,7 +5,7 @@
 #include <map>
 #include <limits>
 
-ImageAOS::ImageAOS(int w, int h) : width(w), height(h), pixels(w * h) {}
+ImageAOS::ImageAOS(int w, int h) : pixels(static_cast<size_t>(w * h)), width(w), height(h) {}
 
 // Main cutfreq function, split into helper functions for clarity and compliance
 void ImageAOS::cutfreq(int frequency_threshold) {
@@ -42,6 +42,9 @@ void ImageAOS::replaceInfrequentColors(
     const std::map<std::tuple<int, int, int>, int>& color_freq,
     const std::vector<std::tuple<int, int, int>>& infrequent_colors,
     int frequency_threshold) {
+
+    (void)infrequent_colors;  // Suppress unused parameter warning
+
     for (auto& pixel : pixels) {
         auto color = std::make_tuple(pixel.R, pixel.G, pixel.B);
         if (color_freq.at(color) < frequency_threshold) {

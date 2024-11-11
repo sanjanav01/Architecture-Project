@@ -5,7 +5,7 @@ add_executable(utest-img-aos
 )
 
 target_link_libraries(utest-img-aos
-        PRIVATE imgaos  # Link the imgaos library
+        PRIVATE imageaos  # Link the imageaos library
         GTest::gtest_main
 )
 
