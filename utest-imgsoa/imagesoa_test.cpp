@@ -1,7 +1,7 @@
 // imagesoa_test.cpp
 
 #include <gtest/gtest.h>
-#include "imagesoa.hpp"
+#include "imgsoa/imagesoa.hpp"
 
 // Test if `cutfreq` correctly identifies and removes infrequent colors
 TEST(ImageSOATest, CutFreq_RemovesInfrequentColors) {
