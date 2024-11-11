@@ -32,7 +32,6 @@ class ImageSOA {
       int frequency_threshold);
 
   private:
-  // Correct declaration for `findClosestColor`
   std::tuple<int, int, int> findClosestColor(
       const std::tuple<int, int, int>& color,
       const std::map<std::tuple<int, int, int>, int>& color_freq,
