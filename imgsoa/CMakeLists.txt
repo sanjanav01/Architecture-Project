@@ -1,2 +1,8 @@
-add_library(imagesoa imagesoa.cpp
-        imagesoa.hpp)
+add_library(imgsoa
+        imagesoa.cpp
+)
+
+target_include_directories(imgsoa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Use this line only if you have dependencies from this library to GSL
+target_link_libraries(imgsoa PRIVATE Microsoft.GSL::GSL)
