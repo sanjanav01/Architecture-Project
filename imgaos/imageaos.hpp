@@ -19,7 +19,7 @@ public:
     int width;
     int height;
 
-  ImageAOS(int width, int height);
+  Imagstatic eAOS(int width, int height);
 
   void cutfreq(int frequency_threshold);
 
