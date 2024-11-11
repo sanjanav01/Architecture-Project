@@ -3,6 +3,7 @@ add_executable(utest-common
         readppm_test.cpp
         metadata_test.cpp
         writecppm_test.cpp
+        proargs_test.cpp
 )  # Add other test files if necessary
 # tests/utest-common/CMakeLists.txt
 
