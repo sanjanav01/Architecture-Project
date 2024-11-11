@@ -43,9 +43,10 @@ Image read_ppm(const std::string& file_path) {
             std::array<uint8_t, RGB_CHANNELS_16BIT> rgb_bytes{};
             file.read(reinterpret_cast<char*>(rgb_bytes.data()), RGB_CHANNELS_16BIT);
             if (file.gcount() != RGB_CHANNELS_16BIT) {throw std::runtime_error("Error reading pixel data for 16-bit color");}
-            const uint16_t red = (static_cast<uint16_t>(rgb_bytes[0]) << 8) | rgb_bytes[1];
-            const uint16_t green = (static_cast<uint16_t>(rgb_bytes[2]) << 8) | rgb_bytes[3];
-            const uint16_t blue = (static_cast<uint16_t>(rgb_bytes[4]) << 8) | rgb_bytes[5];
+            const auto red = static_cast<uint16_t>((static_cast<uint16_t>(rgb_bytes[0]) << 8) | rgb_bytes[1]);
+            const auto green = static_cast<uint16_t>((static_cast<uint16_t>(rgb_bytes[2]) << 8) | rgb_bytes[3]);
+            const auto blue = static_cast<uint16_t>((static_cast<uint16_t>(rgb_bytes[4]) << 8) | rgb_bytes[5]);
+
             pixel = {.r=static_cast<uint8_t>(red * MaxByteValue / image.max_color_value),.g=static_cast<uint8_t>(green * MaxByteValue / image.max_color_value),.b=static_cast<uint8_t>(blue * MaxByteValue / image.max_color_value)};
         }
     }
