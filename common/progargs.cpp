@@ -1,124 +1,82 @@
 #include "progargs.hpp"
 #include <iostream>
+#include <stdexcept>
 #include <algorithm>
+#include <array>
+#include <ranges>
 
-
-namespace {
-    constexpr int MIN_ARGS = 3;
-    constexpr int MAXLEVEL_PARAM_INDEX = 4;
-    constexpr int RESIZE_PARAM_COUNT = 5;
-    constexpr int CUTFREQ_PARAM_COUNT = 4;
-    constexpr int MAX_COLOR_VALUE = 65535;
-}
+constexpr int MIN_ARGS = 3;
+constexpr int MAXLEVEL_PARAM_INDEX = 4;
+constexpr int RESIZE_PARAM_COUNT = 5;
+constexpr int CUTFREQ_PARAM_COUNT = 4;
+constexpr int MAX_COLOR_VALUE = 65535;
 
 ProgArgs ProgArgs::parse_arguments(int argc, const char* const* argv) {
-  // Minimum required arguments check
-  if (argc < MIN_ARGS) {
-    display_error("Error: Invalid number of arguments: " + std::to_string(argc), -1);
-  }
+    // Minimum required arguments check
+    if (argc < MIN_ARGS) {
+        ProgArgs::display_error("Error: Invalid number of arguments: " + std::to_string(argc), -1);
+    }
 
-  ProgArgs parsedArgs;
+    ProgArgs parsedArgs;
+    parsedArgs.inputFile = argv[1];
+    parsedArgs.outputFile = argv[2];
+    parsedArgs.operation = argv[3];
 
-  // Use std::next for iterator advancement to avoid pointer arithmetic
-  const char* const* arg_iter = std::next(argv, 1); // Start from the first argument after the program name
-  parsedArgs.inputFile = *arg_iter;
-  parsedArgs.outputFile = *std::next(arg_iter, 1);
-  parsedArgs.operation = *std::next(arg_iter, 2);
+    // Collect additional parameters if they exist
+    for (int i = 4; i < argc; ++i) {
+        parsedArgs.additionalParams.emplace_back(argv[i]);
+    }
 
-  // Collect additional parameters if they exist
-  for (const auto* param_iter = std::next(arg_iter, 3); param_iter != std::next(argv, argc); param_iter = std::next(param_iter, 1)) {
-    parsedArgs.additionalParams.emplace_back(*param_iter);
-  }
+    // Debugging output to print each additional parameter
+    std::cout << "Additional parameters collected: ";
+    for (const auto& param : parsedArgs.additionalParams) {
+        std::cout << param << " ";
+    }
+    std::cout << "\n";
 
-  if (!validate_operation(parsedArgs, argc)) {
-    exit(-1);  // Exit if validation fails
-  }
-
-  return parsedArgs;
-}
-
-
-
-
-// Helper function to validate the operation type and parameters
-bool ProgArgs::validate_operation(const ProgArgs& parsedArgs, int argc) {
+    // Validate based on operation type
     if (parsedArgs.operation == "info") {
-        return validate_info(argc);
+        if (argc != MIN_ARGS) {
+            ProgArgs::display_error("Error: Invalid extra arguments for info.", -1);
+        }
+    } else if (parsedArgs.operation == "maxlevel") {
+        if (argc != MAXLEVEL_PARAM_INDEX) {
+            ProgArgs::display_error("Error: Invalid number of extra arguments for maxlevel.", -1);
+        }
+        int maxLevelValue = std::stoi(parsedArgs.additionalParams[0]);
+        if (!isInteger(parsedArgs.additionalParams[0]) || maxLevelValue < 0 || maxLevelValue > MAX_COLOR_VALUE) {
+            ProgArgs::display_error("Error: Invalid maxlevel: " + parsedArgs.additionalParams[0], -1);
+        }
+    } else if (parsedArgs.operation == "resize") {
+        if (argc != RESIZE_PARAM_COUNT) {
+            ProgArgs::display_error("Error: Invalid number of extra arguments for resize.", -1);
+        }
+        int resizeWidth = std::stoi(parsedArgs.additionalParams[0]);
+        int resizeHeight = std::stoi(parsedArgs.additionalParams[1]);
+        if (!isInteger(parsedArgs.additionalParams[0]) || resizeWidth <= 0) {
+            ProgArgs::display_error("Error: Invalid resize width: " + parsedArgs.additionalParams[0], -1);
+        }
+        if (!isInteger(parsedArgs.additionalParams[1]) || resizeHeight <= 0) {
+            ProgArgs::display_error("Error: Invalid resize height: " + parsedArgs.additionalParams[1], -1);
+        }
+    } else if (parsedArgs.operation == "cutfreq") {
+        if (argc != CUTFREQ_PARAM_COUNT) {
+            ProgArgs::display_error("Error: Invalid number of extra arguments for cutfreq.", -1);
+        }
+        int cutFreqValue = std::stoi(parsedArgs.additionalParams[0]);
+        if (!isInteger(parsedArgs.additionalParams[0]) || cutFreqValue <= 0) {
+            ProgArgs::display_error("Error: Invalid cutfreq: " + parsedArgs.additionalParams[0], -1);
+        }
+    } else if (parsedArgs.operation == "compress") {
+        if (argc != MIN_ARGS) {
+            ProgArgs::display_error("Error: Invalid extra arguments for compress.", -1);
+        }
+    } else {
+        // If the operation is not recognized, display an error
+        ProgArgs::display_error("Error: Invalid option: " + parsedArgs.operation, -1);
     }
-    if (parsedArgs.operation == "maxlevel") {
-        return validate_maxlevel(parsedArgs, argc);
-    }
-    if (parsedArgs.operation == "resize") {
-        return validate_resize(parsedArgs, argc);
-    }
-    if (parsedArgs.operation == "cutfreq") {
-        return validate_cutfreq(parsedArgs, argc);
-    }
-    if (parsedArgs.operation == "compress") {
-        return validate_compress(argc);
-    }
-    display_error("Error: Invalid option: " + parsedArgs.operation, -1);
-    return false;
-}
 
-bool ProgArgs::validate_info(int argc) {
-    if (argc != MIN_ARGS) {
-        display_error("Error: Invalid extra arguments for info.", -1);
-        return false;
-    }
-    return true;
-}
-
-bool ProgArgs::validate_maxlevel(const ProgArgs& parsedArgs, int argc) {
-    if (argc != MAXLEVEL_PARAM_INDEX) {
-        display_error("Error: Invalid number of extra arguments for maxlevel.", -1);
-        return false;
-    }
-    const int maxLevelValue = std::stoi(parsedArgs.additionalParams[0]);
-    if (!isInteger(parsedArgs.additionalParams[0]) || maxLevelValue < 0 || maxLevelValue > MAX_COLOR_VALUE) {
-        display_error("Error: Invalid maxlevel: " + parsedArgs.additionalParams[0], -1);
-        return false;
-    }
-    return true;
-}
-
-bool ProgArgs::validate_resize(const ProgArgs& parsedArgs, int argc) {
-    if (argc != RESIZE_PARAM_COUNT) {
-        display_error("Error: Invalid number of extra arguments for resize.", -1);
-        return false;
-    }
-    const int resizeWidth = std::stoi(parsedArgs.additionalParams[0]);
-    const int resizeHeight = std::stoi(parsedArgs.additionalParams[1]);
-    if (!isInteger(parsedArgs.additionalParams[0]) || resizeWidth <= 0) {
-        display_error("Error: Invalid resize width: " + parsedArgs.additionalParams[0], -1);
-        return false;
-    }
-    if (!isInteger(parsedArgs.additionalParams[1]) || resizeHeight <= 0) {
-        display_error("Error: Invalid resize height: " + parsedArgs.additionalParams[1], -1);
-        return false;
-    }
-    return true;
-}
-
-bool ProgArgs::validate_cutfreq(const ProgArgs& parsedArgs, int argc) {
-    if (argc != CUTFREQ_PARAM_COUNT) {
-        display_error("Error: Invalid number of extra arguments for cutfreq.", -1);
-        return false;
-    }
-    const int cutFreqValue = std::stoi(parsedArgs.additionalParams[0]);
-    if (!isInteger(parsedArgs.additionalParams[0]) || cutFreqValue <= 0) {
-        display_error("Error: Invalid cutfreq: " + parsedArgs.additionalParams[0], -1);
-        return false;
-    }
-    return true;
-}
-
-bool ProgArgs::validate_compress(int argc) {
-    if (argc != MIN_ARGS) {
-        display_error("Error: Invalid extra arguments for compress.", -1);
-        return false;
-    }
-    return true;
+    return parsedArgs;
 }
 
 [[nodiscard]] std::string ProgArgs::getInputFile() const {

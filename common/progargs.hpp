@@ -13,18 +13,10 @@ class ProgArgs {
   std::string operation;
   std::vector<std::string> additionalParams;
 
-  // Utility functions for validation
-  static bool isInteger(const std::string& str);
-  static bool validate_info(int argc);
-  static bool validate_maxlevel(const ProgArgs& parsedArgs, int argc);
-  static bool validate_resize(const ProgArgs& parsedArgs, int argc);
-  static bool validate_cutfreq(const ProgArgs& parsedArgs, int argc);
-  static bool validate_compress(int argc);
-  static bool validate_operation(const ProgArgs& parsedArgs, int argc);
+  static bool isInteger(const std::string& str);  // Utility to validate integers
 
   public:
-  // Factory method to parse arguments
-  static ProgArgs parse_arguments(int argc, const char* const* argv);
+  static ProgArgs parse_arguments(int argc, const char* const* argv);  // Factory method to parse arguments
 
   // Getters for accessing parsed values
   [[nodiscard]] std::string getInputFile() const;
