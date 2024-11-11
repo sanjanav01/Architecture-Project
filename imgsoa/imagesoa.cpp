@@ -5,7 +5,7 @@
 #include <map>
 #include <limits>
 
-ImageSOA::ImageSOA(int w, int h) : width(w), height(h), R(w * h), G(w * h), B(w * h) {}
+ImageSOA::ImageSOA(int width, int height) :R(static_cast<size_t>(width * height)), G(static_cast<size_t>(width * height)), B(static_cast<size_t>(width * height)),  width(width), height(height) {}
 
 // Main cutfreq function, split into helper functions for clarity and compliance
 void ImageSOA::cutfreq(int frequency_threshold) {
@@ -27,7 +27,7 @@ std::map<std::tuple<int, int, int>, int> ImageSOA::calculateColorFrequencies() c
 // Helper function to identify infrequent colors
 std::vector<std::tuple<int, int, int>> ImageSOA::getInfrequentColors(
     const std::map<std::tuple<int, int, int>, int>& color_freq,
-    int frequency_threshold) const {
+    int frequency_threshold) {
     std::vector<std::tuple<int, int, int>> infrequent_colors;
     for (const auto& [color, freq] : color_freq) {
         if (freq < frequency_threshold) {
@@ -42,6 +42,9 @@ void ImageSOA::replaceInfrequentColors(
     const std::map<std::tuple<int, int, int>, int>& color_freq,
     const std::vector<std::tuple<int, int, int>>& infrequent_colors,
     int frequency_threshold) {
+
+    (void)infrequent_colors;  // Suppress unused parameter warning
+
     for (size_t i = 0; i < R.size(); ++i) {
         auto color = std::make_tuple(R[i], G[i], B[i]);
         if (color_freq.at(color) < frequency_threshold) {
@@ -57,14 +60,14 @@ void ImageSOA::replaceInfrequentColors(
 std::tuple<int, int, int> ImageSOA::findClosestColor(
     const std::tuple<int, int, int>& color,
     const std::map<std::tuple<int, int, int>, int>& color_freq,
-    int frequency_threshold) const {
+    int frequency_threshold) {
 
     double min_distance = std::numeric_limits<double>::max();
     std::tuple<int, int, int> closest_color;
 
     for (const auto& [frequent_color, freq] : color_freq) {
         if (freq >= frequency_threshold) {
-            double distance = std::sqrt(
+            double const distance = std::sqrt(
                 std::pow(std::get<0>(color) - std::get<0>(frequent_color), 2) +
                 std::pow(std::get<1>(color) - std::get<1>(frequent_color), 2) +
                 std::pow(std::get<2>(color) - std::get<2>(frequent_color), 2)
