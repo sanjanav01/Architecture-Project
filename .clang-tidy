@@ -26,4 +26,8 @@ WarningsAsErrors: '*'
 HeaderFileExtensions: [ 'h', 'hpp' ]
 ImplementationFileExtensions: [ 'cpp']
 
+<<<<<<< HEAD
 FormatStyle: file
+=======
+FormatStyle: file
+>>>>>>> 2e0fa2c (updates:)
