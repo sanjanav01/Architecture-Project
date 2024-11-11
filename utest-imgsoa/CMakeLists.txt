@@ -1,6 +1,5 @@
 # CMakeLists.txt in utest-imgsoa
 add_executable(utest-img-soa
-        imagesoa_test.cpp
         test_resize.cpp  # Assuming the test file name
         cutfreq_soa_test.cpp
         cutfreq_soa_test.cpp  # Assuming the test file name

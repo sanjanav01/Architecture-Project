@@ -21,7 +21,7 @@ public:
   // Function to remove infrequent colors
   void cutfreq(int frequency_threshold);
 
-    ImageSOA resize_soa(int new_width, int new_height) const;
+    [[nodiscard]] ImageSOA resize_soa(int new_width, int new_height) const;
 };
 
 #endif // IMAGESOA_HPP

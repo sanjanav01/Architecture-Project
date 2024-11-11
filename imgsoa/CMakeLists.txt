@@ -7,6 +7,6 @@ target_include_directories(imgsoa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(imgsoa PRIVATE Microsoft.GSL::GSL)
 
 # Link the helpers library to imagesoa
-target_link_libraries(imagesoa PUBLIC helpers)
+target_link_libraries(imgsoa PUBLIC helpers)
 
 

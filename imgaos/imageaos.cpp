@@ -4,6 +4,7 @@
 #include <cmath>
 #include <map>
 #include <vector>
+#include <helpers/helpers.hpp>
 
 // Constructor with width and height parameters
 ImageAOS::ImageAOS(const int width, const int height)
