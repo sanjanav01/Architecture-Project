@@ -21,8 +21,10 @@ class ImageAOS {
 
   void cutfreq(int frequency_threshold);
 
+  // Function to scale pixel values to a new max level
+  void maxlevel(int new_max_level);
+
   [[nodiscard]] std::map<std::tuple<int, int, int>, int> calculateColorFrequencies() const;
-  void maxlevel(int new_max_value);
 
   // Static declarations (remove duplicates)
   [[nodiscard]] static std::vector<std::tuple<int, int, int>>
@@ -40,4 +42,3 @@ class ImageAOS {
 };
 
 #endif // IMAGEAOS_HPP
-
