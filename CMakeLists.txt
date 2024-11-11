@@ -41,6 +41,7 @@ add_subdirectory(imgaos)
 add_subdirectory(imgsoa)
 add_subdirectory(imtool-aos)
 add_subdirectory(imtool-soa)
+add_subdirectory(helpers)
 
 # Unit tests and functional tests
 enable_testing()
