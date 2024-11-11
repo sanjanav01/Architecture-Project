@@ -5,7 +5,7 @@
 #include <map>
 #include <limits>
 
-ImageSOA::ImageSOA(int w, int h) : width(w), height(h), R(w * h), G(w * h), B(w * h) {}
+ImageSOA::ImageSOA(int w, int h) :R(static_cast<size_t>(w * h)), G(static_cast<size_t>(w * h)), B(static_cast<size_t>(w * h)),  width(w), height(h) {}
 
 // Main cutfreq function, split into helper functions for clarity and compliance
 void ImageSOA::cutfreq(int frequency_threshold) {
@@ -42,6 +42,9 @@ void ImageSOA::replaceInfrequentColors(
     const std::map<std::tuple<int, int, int>, int>& color_freq,
     const std::vector<std::tuple<int, int, int>>& infrequent_colors,
     int frequency_threshold) {
+
+    (void)infrequent_colors;  // Suppress unused parameter warning
+
     for (size_t i = 0; i < R.size(); ++i) {
         auto color = std::make_tuple(R[i], G[i], B[i]);
         if (color_freq.at(color) < frequency_threshold) {
