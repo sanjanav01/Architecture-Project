@@ -7,6 +7,8 @@
 #include <vector>
 
 constexpr static int MaxByteValue = 255;
+constexpr static int LE_MinMaxByteValue = 256;
+constexpr static int LE_MaxByteValue = 65536;
 constexpr static int RGB_CHANNELS = 3;
 constexpr static int RGB_CHANNELS_16BIT = 6;
 
@@ -60,9 +62,11 @@ void write_ppm(const std::string& file_path, const Image& image) {
 
     bool const use_1_byte_per_channel = (image.max_color_value <= MaxByteValue);
     for (const auto& pixel : image.pixels) {
-        if (use_1_byte_per_channel) {
-            out_file.put(pixel.r).put(pixel.g).put(pixel.b);
-        } else {
+      if (use_1_byte_per_channel) {
+        out_file.put(static_cast<char>(pixel.r & MaxByteValue))
+                .put(static_cast<char>(pixel.g & MaxByteValue))
+                .put(static_cast<char>(pixel.b & MaxByteValue));
+      } else {
             const uint16_t red = pixel.r;
             const uint16_t green = pixel.g;
             const uint16_t blue = pixel.b;
@@ -92,8 +96,14 @@ void write_cppm(const std::string& file_path, const CompressedImage& image) {
         file.write(reinterpret_cast<const char*>(&color), sizeof(uint32_t));
     }
 
-    const size_t index_byte_length = (image.color_table.size() <= 256) ? 1 :
-                                     (image.color_table.size() <= 65536) ? 2 : 4;
+    size_t index_byte_length = 0;
+    if (image.color_table.size() <= LE_MinMaxByteValue) {
+      index_byte_length = 1;
+    } else if (image.color_table.size() <= LE_MaxByteValue) {
+      index_byte_length = 2;
+    } else {
+      index_byte_length = 4;
+    }
 
     for (const auto& index : image.pixel_indices) {
         if (index_byte_length == 1) {
@@ -127,8 +137,15 @@ CompressedImage read_cppm(const std::string& file_path) {
     file.ignore();
     image.color_table.resize(color_table_size);
     for (auto& color : image.color_table) {file.read(reinterpret_cast<char*>(&color), sizeof(uint32_t));}
-    const size_t index_byte_length = (color_table_size <= 256) ? 1 : (color_table_size <= 65536) ? 2 : 4;
-    while (file) {
+    size_t index_byte_length = 0;
+    if (color_table_size <= LE_MinMaxByteValue) {
+      index_byte_length = 1;
+    } else if (color_table_size <= LE_MaxByteValue) {
+      index_byte_length = 2;
+    } else {
+      index_byte_length = 4;
+    }
+  while (file) {
         uint32_t index = 0;
         if (index_byte_length == 1) {
             uint8_t idx = 0;
@@ -143,9 +160,7 @@ CompressedImage read_cppm(const std::string& file_path) {
             file.read(reinterpret_cast<char*>(&idx), 4);
             index = idx;
         }
-        if (file) {
-            image.pixel_indices.push_back(index);
-        }
+        if (file) {image.pixel_indices.push_back(index);}
     }
     file.close();
     return image;
