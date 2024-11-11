@@ -13,11 +13,11 @@ CompressedImageAOS compress_aos(const ImageAOS& image) {
 
   // Step 1: Create a color table using a hash map to store unique colors
   std::unordered_map<std::tuple<uint16_t, uint16_t, uint16_t>, uint32_t> colorMap;
-  const std::vector<std::tuple<uint16_t, uint16_t, uint16_t>> colorTable;
+  std::vector<std::tuple<uint16_t, uint16_t, uint16_t>> colorTable;
 
   for (const auto& pixel : image.pixels) {
     auto color = std::make_tuple(pixel.red, pixel.green, pixel.blue);
-    if (!colorMap.contains(color)) {
+    if (!colorMap.contains(color)) { // Use 'contains' to check existence
       colorMap[color] = static_cast<uint32_t>(colorTable.size());
       colorTable.push_back(color);
     }
