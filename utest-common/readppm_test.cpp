@@ -5,7 +5,7 @@
 
 TEST(ReadPPMTest, ValidPPMFile) {
     // ppm2.ppm
-    std::ofstream file("/Users/shriyasingh/Desktop/Architecture-Project/test_resources/resources/ppm2.ppm", std::ios::binary);
+    std::ofstream file("/Users/anchita14/Desktop/Architecture-Project/test_resources/resources/ppm2.ppm", std::ios::binary);
 
     // PPM Header
     file << "P6\n2 2\n255\n";
@@ -23,7 +23,7 @@ TEST(ReadPPMTest, ValidPPMFile) {
     file.close();
 
 
-    std::string file_path = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/resources/ppm2.ppm";
+    std::string file_path = "/Users/anchita14/Desktop/Architecture-Project/test_resources/resources/ppm2.ppm";
 
     Image image = read_ppm(file_path);
 
