@@ -1,3 +1,13 @@
-add_executable(utest-imgsoa
-        test_resize.cpp)
-target_link_libraries(utest-imgsoa PRIVATE imgsoa GTest::gtest_main)
+# CMakeLists.txt in utest-imgsoa
+add_executable(utest-img-soa
+        imagesoa_test.cpp
+        test_resize.cpp  # Assuming the test file name
+)
+
+target_link_libraries(utest-img-soa
+        PRIVATE imgsoa  # Link the imgsoa library
+        GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(utest-img-soa)
