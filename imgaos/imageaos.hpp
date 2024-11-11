@@ -1,3 +1,5 @@
+// imageaos.hpp
+
 #ifndef IMAGEAOS_HPP
 #define IMAGEAOS_HPP
 
@@ -17,31 +19,29 @@ public:
     int width;
     int height;
 
-    // Constructor to initialize the image dimensions
-    ImageAOS(int w, int h);
+  ImageAOS(int width, int height);
 
-  // Function to remove infrequent colors
   void cutfreq(int frequency_threshold);
-  std::map<std::tuple<int, int, int>, int> calculateColorFrequencies() const;
-  std::vector<std::tuple<int, int, int>>
-      getInfrequentColors(std::map<std::tuple<int, int, int>, int> const & color_freq,
-                          int frequency_threshold) const;
-  void replaceInfrequentColors(std::map<std::tuple<int, int, int>, int> const & color_freq,
-                               std::vector<std::tuple<int, int, int>> const & infrequent_colors,
-                               int frequency_threshold);
-  std::tuple<int, int, int>
-      findClosestColor(std::tuple<int, int, int> const & color,
-                       std::map<std::tuple<int, int, int>, int> const & color_freq,
-                       int frequency_threshold) const;
 
-private:
-  // Helper function to find the closest replacement color
-  std::tuple<int, int, int> findClosestColor(const std::tuple<int, int, int>& color,
-                                             const std::map<std::tuple<int, int, int>, int>& color_freq,
-                                             int frequency_threshold);
+  [[nodiscard]] std::map<std::tuple<int, int, int>, int> calculateColorFrequencies() const;
+
+  // Static declarations (remove duplicates)
+  [[nodiscard]] static std::vector<std::tuple<int, int, int>>
+      getInfrequentColors(const std::map<std::tuple<int, int, int>, int>& color_freq,
+                          int frequency_threshold);
+
+  static std::tuple<int, int, int>
+      findClosestColor(const std::tuple<int, int, int>& color,
+                       const std::map<std::tuple<int, int, int>, int>& color_freq,
+                       int frequency_threshold);
+
+  void replaceInfrequentColors(const std::map<std::tuple<int, int, int>, int>& color_freq,
+    const std::vector<std::tuple<int, int, int>>& infrequent_colors, int frequency_threshold);
+
 };
 
 // Declare the resize function outside the class
 ImageAOS resize_aos(const ImageAOS& image, int new_width, int new_height);
 
 #endif // IMAGEAOS_HPP
+
