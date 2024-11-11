@@ -69,3 +69,5 @@ std::tuple<int, int, int> findClosestColor(
 
     return closest_color;
 }
+
+
