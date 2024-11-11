@@ -3,6 +3,9 @@ add_library(common
         progargs.cpp
         binary.cpp
         metadata.cpp
+        ../helpers/helpers.cpp
+        ../helpers/helpers.hpp
+        ../helpers/helpers.hpp
 )
 
 target_include_directories(common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
