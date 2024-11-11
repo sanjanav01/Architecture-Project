@@ -31,7 +31,6 @@ CompressedImageAOS compress_aos(const ImageAOS& image) {
     compressedImage.colorTable.push_back(std::get<1>(color)); // Green
     compressedImage.colorTable.push_back(std::get<2>(color)); // Blue
   }
-
   // Step 3: Encode each pixel as an index in the color table
   for (const auto& pixel : image.pixels) {
     auto color = std::make_tuple(pixel.red, pixel.green, pixel.blue);
