@@ -5,7 +5,9 @@
 #include <map>
 #include <limits>
 
-ImageAOS::ImageAOS(int w, int h) : pixels(static_cast<size_t>(w * h)), width(w), height(h) {}
+// Constructor with width and height parameters
+ImageAOS::ImageAOS(int width, int height)
+    : pixels(static_cast<size_t>(width * height)), width(width), height(height) {}
 
 // Main cutfreq function, split into helper functions for clarity and compliance
 void ImageAOS::cutfreq(int frequency_threshold) {
@@ -24,10 +26,10 @@ std::map<std::tuple<int, int, int>, int> ImageAOS::calculateColorFrequencies() c
     return color_freq;
 }
 
-// Helper function to identify infrequent colors
+// Static helper function to identify infrequent colors
 std::vector<std::tuple<int, int, int>> ImageAOS::getInfrequentColors(
     const std::map<std::tuple<int, int, int>, int>& color_freq,
-    int frequency_threshold) const {
+    int frequency_threshold) {
     std::vector<std::tuple<int, int, int>> infrequent_colors;
     for (const auto& [color, freq] : color_freq) {
         if (freq < frequency_threshold) {
@@ -56,18 +58,18 @@ void ImageAOS::replaceInfrequentColors(
     }
 }
 
-// Helper function to find the closest replacement color
+// Static helper function to find the closest replacement color
 std::tuple<int, int, int> ImageAOS::findClosestColor(
     const std::tuple<int, int, int>& color,
     const std::map<std::tuple<int, int, int>, int>& color_freq,
-    int frequency_threshold) const {
+    int frequency_threshold) {
 
     double min_distance = std::numeric_limits<double>::max();
     std::tuple<int, int, int> closest_color;
 
     for (const auto& [frequent_color, freq] : color_freq) {
         if (freq >= frequency_threshold) {
-            double distance = std::sqrt(
+            const double distance = std::sqrt(
                 std::pow(std::get<0>(color) - std::get<0>(frequent_color), 2) +
                 std::pow(std::get<1>(color) - std::get<1>(frequent_color), 2) +
                 std::pow(std::get<2>(color) - std::get<2>(frequent_color), 2)
