@@ -1,5 +1,3 @@
-// imageaos.hpp
-
 #ifndef IMAGEAOS_HPP
 #define IMAGEAOS_HPP
 
@@ -25,6 +23,11 @@ public:
     // Function to remove infrequent colors
     void cutfreq(int frequency_threshold);
     std::map<std::tuple<int, int, int>, int> calculateColorFrequencies() const;
+
+    std::vector<std::tuple<int, int, int>> getInfrequentColors(
+        const std::map<std::tuple<int, int, int>, int> &color_freq,
+        int frequency_threshold);
+
     std::vector<std::tuple<int, int, int>>
         getInfrequentColors(std::map<std::tuple<int, int, int>, int> const & color_freq,
                             int frequency_threshold) const;
@@ -43,5 +46,7 @@ private:
                                                int frequency_threshold);
 };
 
-#endif // IMAGEAOS_HPP
+// Declare the resize function outside the class
+ImageAOS resize_aos(const ImageAOS& image, int new_width, int new_height);
 
+#endif // IMAGEAOS_HPP
