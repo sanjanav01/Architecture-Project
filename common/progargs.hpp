@@ -5,7 +5,6 @@
 #include <vector>
 
 class ProgArgs {
-
   private:
   ProgArgs() = default;  // Private constructor to enforce static parsing
 
@@ -14,19 +13,27 @@ class ProgArgs {
   std::string operation;
   std::vector<std::string> additionalParams;
 
-  static bool isInteger(const std::string& str);  // Utility to validate integers
+  // Utility functions for validation
+  static bool isInteger(const std::string& str);
+  static bool validate_info(int argc);
+  static bool validate_maxlevel(const ProgArgs& parsedArgs, int argc);
+  static bool validate_resize(const ProgArgs& parsedArgs, int argc);
+  static bool validate_cutfreq(const ProgArgs& parsedArgs, int argc);
+  static bool validate_compress(int argc);
+  static bool validate_operation(const ProgArgs& parsedArgs, int argc);
 
   public:
-  static ProgArgs parse_arguments(int argc, char* argv[]);  // Factory method to parse arguments
+  // Factory method to parse arguments
+  static ProgArgs parse_arguments(int argc, const char* const* argv);
 
   // Getters for accessing parsed values
-  std::string getInputFile() const;
-  std::string getOutputFile() const;
-  std::string getOperation() const;
-  std::vector<std::string> getAdditionalParams() const;
+  [[nodiscard]] std::string getInputFile() const;
+  [[nodiscard]] std::string getOutputFile() const;
+  [[nodiscard]] std::string getOperation() const;
+  [[nodiscard]] std::vector<std::string> getAdditionalParams() const;
 
   // Static utility function for error display
   static void display_error(const std::string& error_message, int error_code = -1);
 };
 
-#endif
+#endif  // PROGARGS_HPP
