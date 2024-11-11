@@ -30,7 +30,7 @@ public:
       const std::map<std::tuple<int, int, int>, int>& color_freq,
       const std::vector<std::tuple<int, int, int>>& infrequent_colors,
       int frequency_threshold);
-  ImageSOA resize_soa(int new_width, int new_height) const;
+  [[nodiscard]] ImageSOA resize_soa(int new_width, int new_height) const;
 
   private:
   static std::tuple<int, int, int> findClosestColor(

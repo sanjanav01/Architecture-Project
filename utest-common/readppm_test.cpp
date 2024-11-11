@@ -3,6 +3,7 @@
 #include "common/binaryio.hpp"       // Include the read_ppm function
 #include <string>
 
+constexpr static int MAGIC = 255;
 TEST(ReadPPMTest, ValidPPMFile) {
     // ppm2.ppm
     std::ofstream file("test_resources", std::ios::binary);
@@ -12,10 +13,10 @@ TEST(ReadPPMTest, ValidPPMFile) {
 
     // Pixel data: R, G, B values for each pixel in binary format
     std::vector<uint8_t> pixel_data = {
-        255, 0, 0,     // Red
-        0, 255, 0,     // Green
-        0, 0, 255,     // Blue
-        255, 255, 0    // Yellow
+        MAGIC, 0, 0,     // Red
+        0, MAGIC, 0,     // Green
+        0, 0, MAGIC,     // Blue
+        MAGIC, MAGIC, 0    // Yellow
     };
 
     file.write(reinterpret_cast<char*>(pixel_data.data()), static_cast<std::streamsize>(pixel_data.size()));
@@ -23,7 +24,7 @@ TEST(ReadPPMTest, ValidPPMFile) {
     file.close();
 
 
-    std::string file_path = "test_resources";
+    std::string const file_path = "test_resources";
 
     Image image = read_ppm(file_path);
 
@@ -40,6 +41,6 @@ TEST(ReadPPMTest, ValidPPMFile) {
 }
 
 TEST(ReadPPMTest, InvalidMagicNumber) {
-    std::string file_path = "test_resources/resources/invalid_magic.ppm";
+    std::string const file_path = "test_resources/resources/invalid_magic.ppm";
     EXPECT_THROW(read_ppm(file_path), std::runtime_error);
 }

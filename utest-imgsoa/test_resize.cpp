@@ -1,28 +1,38 @@
 #include <fstream>
 #include <gtest/gtest.h>
 #include "imgsoa/imagesoa.hpp"
-ImageSOA createCheckerboardImage(int width, int height, int max_val) {
-    ImageSOA image(width, height);
-    image.R.resize(static_cast<size_t>(width * height));
-    image.G.resize(static_cast<size_t>(width * height));
-    image.B.resize(static_cast<size_t>(width * height));
 
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            int color = ((x + y) % 2) * max_val;
-            size_t index = static_cast<size_t>(y * width + x);
-            image.R[index] = color;
-            image.G[index] = color;
-            image.B[index] = color;
+constexpr static int SIX = 6;
+constexpr static int NINE = 9;
+constexpr static int HUND = 100;
+constexpr static int HUNDFIFTY = 150;
+constexpr static int TWOHUND = 200;
+
+namespace {
+    ImageSOA createCheckerboardImage(const int width, const int height) {
+        ImageSOA image(width, height);
+        size_t const total_pixels = static_cast<size_t>(width) * static_cast<size_t>(height);
+        image.R.resize(total_pixels);
+        image.G.resize(total_pixels);
+        image.B.resize(total_pixels);
+
+        for (int hgt = 0; hgt < height; ++hgt) {
+            for (int wdt = 0; wdt < width; ++wdt) {
+                int const color = ((wdt + hgt) % 2) * 255;
+                const auto index = (static_cast<size_t>(hgt) * static_cast<size_t>(width)) + static_cast<size_t>(wdt);
+                image.R[index] = color;
+                image.G[index] = color;
+                image.B[index] = color;
+            }
         }
+        return image;
     }
-    return image;
 }
 
 // Test resizing from small to larger size (upscale)
 TEST(ImageSOAResizeTest, UpscaleCheckerboard) {
-    ImageSOA image = createCheckerboardImage(2, 2, 255);
-    ImageSOA resized_image = image.resize_soa(4, 4);
+    ImageSOA const image = createCheckerboardImage(2, 2);
+    const ImageSOA resized_image = image.resize_soa(4, 4);
 
     EXPECT_EQ(resized_image.width, 4);
     EXPECT_EQ(resized_image.height, 4);
@@ -36,8 +46,8 @@ TEST(ImageSOAResizeTest, UpscaleCheckerboard) {
 
 // Test resizing from larger to smaller size (downscale)
 TEST(ImageSOAResizeTest, DownscaleCheckerboard) {
-    ImageSOA image = createCheckerboardImage(4, 4, 255);
-    ImageSOA resized_image = image.resize_soa(2, 2);
+    ImageSOA const image = createCheckerboardImage(4, 4);
+    const ImageSOA resized_image = image.resize_soa(2, 2);
 
     EXPECT_EQ(resized_image.width, 2);
     EXPECT_EQ(resized_image.height, 2);
@@ -51,8 +61,8 @@ TEST(ImageSOAResizeTest, DownscaleCheckerboard) {
 
 // Test identity resizing (no size change)
 TEST(ImageSOAResizeTest, IdentityResize) {
-    ImageSOA image = createCheckerboardImage(3, 3, 255);
-    ImageSOA resized_image = image.resize_soa(3, 3);
+    const ImageSOA image = createCheckerboardImage(3, 3);
+    const ImageSOA resized_image = image.resize_soa(3, 3);
 
     EXPECT_EQ(resized_image.width, 3);
     EXPECT_EQ(resized_image.height, 3);
@@ -67,8 +77,8 @@ TEST(ImageSOAResizeTest, IdentityResize) {
 
 // Test non-square resizing
 TEST(ImageSOAResizeTest, NonSquareResize) {
-    ImageSOA image = createCheckerboardImage(2, 3, 255);
-    ImageSOA resized_image = image.resize_soa(4, 6);
+    ImageSOA const image = createCheckerboardImage(2, 3);
+    const ImageSOA resized_image = image.resize_soa(4, 6);
 
     EXPECT_EQ(resized_image.width, 4);
     EXPECT_EQ(resized_image.height, 6);
@@ -83,11 +93,11 @@ TEST(ImageSOAResizeTest, NonSquareResize) {
 // Test resizing a solid color image (uniform value)
 TEST(ImageSOAResizeTest, SolidColorResize) {
     ImageSOA image(3, 3);
-    image.R.assign(static_cast<size_t>(9), 100);
-    image.G.assign(static_cast<size_t>(9), 150);
-    image.B.assign(static_cast<size_t>(9), 200);
+    image.R.assign(static_cast<size_t>(NINE), HUND);
+    image.G.assign(static_cast<size_t>(NINE), HUNDFIFTY);
+    image.B.assign(static_cast<size_t>(NINE), TWOHUND);
 
-    ImageSOA resized_image = image.resize_soa(6, 6);
+    ImageSOA resized_image = image.resize_soa(SIX, SIX);
 
     EXPECT_EQ(resized_image.width, 6);
     EXPECT_EQ(resized_image.height, 6);

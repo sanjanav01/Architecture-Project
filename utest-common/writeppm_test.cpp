@@ -61,5 +61,7 @@ TEST(BinaryIO, WritePPM) {
     ASSERT_FALSE(file.fail()) << "Error reading pixel data from file";
 
     file.close();
-    std::remove(test_file_path.c_str());
+    if (int const result = std::remove(test_file_path.c_str()); result != 0) {
+        std::cerr << "Error: Unable to delete the file " << test_file_path << '\n';
+    }
 }
