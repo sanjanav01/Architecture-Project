@@ -138,7 +138,7 @@ bool ProgArgs::validate_compress(int argc) {
 }
 
 bool ProgArgs::isInteger(const std::string& str) {
-    return !str.empty() && std::ranges::all_of(str, ::isdigit);
+  return !str.empty() && std::all_of(str.begin(), str.end(), ::isdigit);
 }
 
 void ProgArgs::display_error(const std::string& error_message, int error_code) {
