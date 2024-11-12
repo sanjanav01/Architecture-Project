@@ -16,10 +16,15 @@ struct ImageAOS {
   int width;
   int height;
   uint16_t maxColorValue;
+
+  // Constructor to initialize width, height, and reserve space for pixels
+  explicit ImageAOS(int w = 0, int h = 0) : width(w), height(h), maxColorValue(0) {
+    pixels.resize(w * h);
+  }
 };
 
 struct CompressedImageAOS {
-  std::string magicNumber; // Now std::string should be recognized
+  std::string magicNumber;
   int width;
   int height;
   uint16_t maxColorValue;

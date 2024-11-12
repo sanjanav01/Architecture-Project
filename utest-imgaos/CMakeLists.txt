@@ -2,7 +2,8 @@
 add_executable(utest-img-aos
         cutfreq_aos_test.cpp
         cutfreq_aos_test.cpp  # Assuming the test file name
-        aosresize_test.cpp  # Assuming the test file name
+        aosresize_test.cpp
+        compress_test.cpp  # Assuming the test file name
 )
 
 target_link_libraries(utest-img-aos
