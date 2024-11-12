@@ -4,9 +4,9 @@
 #include <vector>
 
 struct Pixel {
-    int R;
-    int G;
-    int B;
+    mutable int R;
+    mutable int G;
+    mutable int B;
 };
 
 class ImageAOS {
@@ -16,6 +16,8 @@ public:
     int height;
 
     ImageAOS(int width, int height);
+
+    ImageAOS(int width, int height, uint16_t uint16);
 
     void cutfreq(int frequency_threshold);
 
