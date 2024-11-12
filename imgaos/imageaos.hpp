@@ -1,13 +1,9 @@
 #ifndef IMAGEAOS_HPP
 #define IMAGEAOS_HPP
+#include "common/image_types.hpp"
+
 
 #include <vector>
-
-struct Pixel {
-  int R;
-  int G;
-  int B;
-};
 
 class ImageAOS {
   public:
