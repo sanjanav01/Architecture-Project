@@ -2,12 +2,7 @@
 #define IMAGEAOS_HPP
 
 #include <vector>
-
-struct Pixel {
-  int R;
-  int G;
-  int B;
-};
+#include "common/image_types.hpp"
 
 class ImageAOS {
   public:
@@ -18,7 +13,7 @@ class ImageAOS {
   ImageAOS(int width, int height);
 
   void cutfreq(int frequency_threshold);
-
+  static void maxlevel(Image & image, int new_max_value);
 };
 
 #endif // IMAGEAOS_HPP
