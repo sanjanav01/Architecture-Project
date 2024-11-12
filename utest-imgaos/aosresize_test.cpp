@@ -18,8 +18,6 @@ TEST(ImageAOSResize, SolidColorResize) {
         }
     }
 
-    // Resize image
-
     // Check resized values
     for (ImageAOS const resized_image = resize_aos(image, 2, 2); const auto& pixel : resized_image.pixels) {
         EXPECT_EQ(pixel.R, color);
