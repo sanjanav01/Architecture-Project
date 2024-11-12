@@ -1,27 +1,26 @@
-// imageaos.cpp
-
 #include "imageaos.hpp"
-#include <cmath>
+#include "helpers/helpers.hpp" // Include the shared helper file
 #include <map>
 #include <vector>
-#include <helpers/helpers.hpp>
 
 // Constructor with width and height parameters
-ImageAOS::ImageAOS(const int width, const int height)
+ImageAOS::ImageAOS(int width, int height)
     : pixels(static_cast<size_t>(width * height)), width(width), height(height) {}
 
 // Main cutfreq function, which uses shared helper functions for color analysis
-void ImageAOS::cutfreq(const int frequency_threshold) {
+void ImageAOS::cutfreq(int frequency_threshold) {
     // Extract Red, Green, and Blue channels from pixels
     ColorChannels channels;
-    for (const auto&[R, G, B] : pixels) {
-        channels.R.push_back(R);
-        channels.G.push_back(G);
-        channels.B.push_back(B);
+    for (const auto& pixel : pixels) {
+        channels.R.push_back(pixel.R);
+        channels.G.push_back(pixel.G);
+        channels.B.push_back(pixel.B);
     }
+
     auto color_freq = calculateColorFrequencies(channels);
     auto infrequent_colors = getInfrequentColors(color_freq, frequency_threshold);
     replaceInfrequentColors(channels, color_freq, frequency_threshold);
+
     // Update the pixels with new color values
     for (size_t i = 0; i < pixels.size(); ++i) {
         pixels[i].R = channels.R[i];
@@ -29,6 +28,7 @@ void ImageAOS::cutfreq(const int frequency_threshold) {
         pixels[i].B = channels.B[i];
     }
 }
+
 ImageAOS resize_aos(const ImageAOS& image, const int new_width, const int new_height) {
     ImageAOS resized_image(new_width, new_height);
 

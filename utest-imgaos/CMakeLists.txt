@@ -1,12 +1,11 @@
 # CMakeLists.txt in utest-imgaos
 add_executable(utest-img-aos
         cutfreq_aos_test.cpp
-        cutfreq_aos_test.cpp  # Assuming the test file name
-        aosresize_test.cpp  # Assuming the test file name
+        resize_aos_test.cpp
 )
 
 target_link_libraries(utest-img-aos
-        PRIVATE imgaos  # Link the imgaos library
+        PRIVATE imageaos helpers # Link the imageaos library
         GTest::gtest_main
 )
 

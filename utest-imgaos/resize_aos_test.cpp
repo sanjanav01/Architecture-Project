@@ -17,9 +17,7 @@ TEST(ImageAOSResize, SolidColorResize) {
             image.pixels[(static_cast<size_t>(hgt) * static_cast<size_t>(width)) + static_cast<size_t>(wdt)] = {.R=color, .G=color, .B=color};
         }
     }
-
-    // Resize image
-
+    
     // Check resized values
     for (ImageAOS const resized_image = resize_aos(image, 2, 2); const auto& pixel : resized_image.pixels) {
         EXPECT_EQ(pixel.R, color);

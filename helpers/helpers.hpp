@@ -7,9 +7,9 @@
 
 // Struct to encapsulate R, G, and B channels
 struct ColorChannels {
-  std::vector<int> R;
-  std::vector<int> G;
-  std::vector<int> B;
+    std::vector<int> R;
+    std::vector<int> G;
+    std::vector<int> B;
 };
 
 // Helper function declarations
@@ -31,4 +31,3 @@ std::tuple<int, int, int> findClosestColor(
     int frequency_threshold);
 
 #endif // HELPERS_HPP
-
