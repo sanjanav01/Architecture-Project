@@ -2,6 +2,9 @@
 add_executable(utest-img-aos
         # Assuming the test file name
         compress_test_aos.cpp  # Assuming the test file name
+        cutfreq_aos_test.cpp
+        cutfreq_aos_test.cpp
+        maxlevel_test.cpp  # Assuming the test file name
 )
 
 target_link_libraries(utest-img-aos

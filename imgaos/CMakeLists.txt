@@ -4,10 +4,9 @@ add_library(imgaos
 )
 # imgaos/CMakeLists.txt
 
-# Define the imageaos library without directly including helpers.cpp
+# Define the imageaos library
 add_library(imageaos STATIC imageaos.cpp)
 target_include_directories(imageaos PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-# Link the helpers library to imageaos
-target_link_libraries(imageaos PUBLIC helpers)
-
+# Link both helpers and common libraries to imageaos
+target_link_libraries(imageaos PUBLIC helpers common)  # Add common here
