@@ -17,9 +17,9 @@ struct ImageAOS {
   int height;
   uint16_t maxColorValue;
 
-  // Constructor to initialize width, height, and reserve space for pixels
+  // Explicit constructor to initialize width, height, and reserve space for pixels
   explicit ImageAOS(int w = 0, int h = 0) : width(w), height(h), maxColorValue(0) {
-    pixels.resize(w * h);
+    pixels.resize(static_cast<std::vector<RGB>::size_type>(std::max(w * h, 0)));
   }
 };
 

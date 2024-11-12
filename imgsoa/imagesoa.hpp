@@ -24,6 +24,7 @@ struct CompressedImageSOA {
   std::vector<uint32_t> pixelIndices;
 };
 
+// Function declaration
 CompressedImageSOA compress_soa(const ImageSOA& image);
 
 #endif // IMGSOA_HPP
