@@ -1,3 +1,5 @@
 cmake-build-debug
 googletest/
 .idea/
+test_resources/input
+test_resources/outputs

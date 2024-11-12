@@ -30,5 +30,7 @@ std::tuple<int, int, int> findClosestColor(
     const std::map<std::tuple<int, int, int>, int>& color_freq,
     int frequency_threshold);
 
+bool compareImages(const std::string& file1, const std::string& file2);
+
 #endif // HELPERS_HPP
 

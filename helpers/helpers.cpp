@@ -1,6 +1,8 @@
 #include "helpers.hpp"
+
 #include <cmath>
 #include <limits>
+#include <string>
 
 // Definition of calculateColorFrequencies
 std::map<std::tuple<int, int, int>, int> calculateColorFrequencies(
@@ -68,4 +70,16 @@ std::tuple<int, int, int> findClosestColor(
     }
 
     return closest_color;
+}
+
+// Helper function to compare two images using `cmp` command
+bool compareImages(const std::string& file1, const std::string& file2) {
+  // Construct the cmp command
+  std::string const command = "cmp -s " + file1 + " " + file2;
+
+  // Execute the command and capture the result
+  int const result = std::system(command.c_str());
+
+  // Return true if files are identical, false otherwise
+  return result == 0;
 }
