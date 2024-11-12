@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cassert>
 
+
+
 namespace {
     constexpr uint16_t MAX_COLOR_VALUE = 255;
     constexpr int IMAGE_WIDTH = 2;

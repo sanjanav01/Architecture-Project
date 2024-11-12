@@ -21,6 +21,7 @@ struct ImageAOS {
   explicit ImageAOS(int w = 0, int h = 0) : width(w), height(h), maxColorValue(0) {
     pixels.resize(static_cast<std::vector<RGB>::size_type>(std::max(w * h, 0)));
   }
+
 };
 
 struct CompressedImageAOS {
