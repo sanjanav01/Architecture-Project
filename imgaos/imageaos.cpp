@@ -6,11 +6,12 @@
 #include <cmath>
 #include <stdexcept>
 #include <algorithm> // for std::clamp
+#include <iostream>
 
-//constexpr static int MaxByteValue = 255;
-constexpr static int PixelResizeThreshold = 256;
-constexpr static int BytesPerPixel3 = 3;
-constexpr static int BytesPerPixel6 = 6;
+// constexpr static int MaxByteValue = 255;
+ constexpr static int PixelResizeThreshold = 256;
+ constexpr static int BytesPerPixel3 = 3;
+ constexpr static int BytesPerPixel6 = 6;
 
 // Constructor with width and height parameters
 ImageAOS::ImageAOS(int width, int height)
@@ -38,27 +39,38 @@ void ImageAOS::cutfreq(int frequency_threshold) {
   }
 }
 
+
 void ImageAOS::maxlevel(Image& image, int new_max_value) {
     if (new_max_value <= 0) {
         throw std::invalid_argument("New max value must be positive.");
     }
-
-    // Step 1: Scale each pixel's RGB values to the new maximum value
+    // Pre-compute scaling factor
+    double const scaling_factor = static_cast<double>(new_max_value) / image.max_color_value;
+    // Scale each pixel's RGB values using floor instead of round
     for (auto& pixel : image.pixels) {
-        pixel.r = static_cast<uint16_t>(std::round((static_cast<double>(pixel.r) * new_max_value) / image.max_color_value));
-        pixel.g = static_cast<uint16_t>(std::round((static_cast<double>(pixel.g) * new_max_value) / image.max_color_value));
-        pixel.b = static_cast<uint16_t>(std::round((static_cast<double>(pixel.b) * new_max_value) / image.max_color_value));
+        uint16_t const original_r = pixel.r;
+        uint16_t const original_g = pixel.g;
+        uint16_t const original_b = pixel.b;
 
-        // Clamp each channel's value to ensure it is within the [0, new_max_value] range
+        pixel.r = static_cast<uint16_t>(std::floor(static_cast<double>(pixel.r) * scaling_factor));
+        pixel.g = static_cast<uint16_t>(std::floor(static_cast<double>(pixel.g) * scaling_factor));
+        pixel.b = static_cast<uint16_t>(std::floor(static_cast<double>(pixel.b) * scaling_factor));
+        // Optional: clamp each channel's value if desired to ensure it is within the [0, new_max_value] range
         pixel.r = std::clamp(pixel.r, static_cast<uint16_t>(0), static_cast<uint16_t>(new_max_value));
         pixel.g = std::clamp(pixel.g, static_cast<uint16_t>(0), static_cast<uint16_t>(new_max_value));
         pixel.b = std::clamp(pixel.b, static_cast<uint16_t>(0), static_cast<uint16_t>(new_max_value));
+
+        // Debugging output to check the values
+        if (pixel.r != original_r || pixel.g != original_g || pixel.b != original_b) {
+            std::cout << "Original RGB(" << original_r << ", " << original_g << ", " << original_b << ") -> "
+                      << "Scaled RGB(" << pixel.r << ", " << pixel.g << ", " << pixel.b << ")\n";
+        }
     }
 
-    // Step 2: Update the max_color_value in the image
+    // Update the max_color_value in the image
     image.max_color_value = new_max_value;
 
-    // Step 3: Adjust internal storage based on pixel size requirement
+    // Adjust internal storage based on pixel size requirement
     const size_t total_pixels = static_cast<size_t>(image.width) * static_cast<size_t>(image.height);
     const size_t required_size = (new_max_value >= PixelResizeThreshold)
                                  ? total_pixels * BytesPerPixel6
