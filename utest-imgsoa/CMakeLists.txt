@@ -1,11 +1,12 @@
-# CMakeLists.txt in utest-imgsoa
+# CMakeLists.txt in utest-imgaos
 add_executable(utest-img-soa
         cutfreq_soa_test.cpp
-        cutfreq_soa_test.cpp  # Assuming the test file name
+        cutfreq_soa_test.cpp
+        maxlevel_test_soa.cpp  # Assuming the test file name
 )
 
 target_link_libraries(utest-img-soa
-        PRIVATE imgsoa  # Link the imgsoa library
+        PRIVATE imagesoa  # Link the imageaos library
         GTest::gtest_main
 )
 

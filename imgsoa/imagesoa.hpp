@@ -4,6 +4,7 @@
 #define IMAGESOA_HPP
 
 #include <vector>
+#include "common/image_types.hpp"
 
 class ImageSOA {
   public:
@@ -18,6 +19,8 @@ class ImageSOA {
 
   // Function to remove infrequent colors
   void cutfreq(int frequency_threshold);
+  static void maxlevel(Image & image, int new_max_value);
+
 
 };
 
