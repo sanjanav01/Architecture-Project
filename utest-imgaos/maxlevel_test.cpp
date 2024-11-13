@@ -4,10 +4,16 @@
 #include "imageaos.hpp"
 #include "helpers.hpp"
 
+#include <chrono> //for testing execution time
+
 constexpr static int new_max_value100 = 100;
 constexpr static int new_max_value1000 = 1000;
+constexpr static int new_max_value1 = 1;
+constexpr static int new_max_value128 = 128;
+constexpr static int new_max_value512 = 512;
 constexpr static int new_max_value255 = 255;
 constexpr static int new_max_value65535 = 65535;
+constexpr static double execution_time = 11.0;
 
 
 TEST(MaxLevelTest, TestDeerMaxLevel100) {
@@ -132,3 +138,98 @@ TEST(MaxLevelTest, TestLakeMaxLevel65535) {
   // Use compareImages with cmp to check if the generated image matches the expected output
   ASSERT_TRUE(compareImages(generatedOutputPath, expectedOutputPath)) << "Images differ for maxlevel 65535";
 }
+
+TEST(MaxLevelPerformanceTest, LakeLargeMaxLevel65535) {
+  // Load the large input image
+  std::string const inputPath = "/Users/sanjana/Downloads/input/lake-large.ppm";
+  Image inputImage = read_ppm(inputPath);
+
+  // Set the max level to 65535
+  int const new_max_value = new_max_value65535;
+
+  // Measure the start time
+  auto start = std::chrono::high_resolution_clock::now();
+
+  // Perform the maxlevel operation
+  ImageAOS::maxlevel(inputImage, new_max_value);
+
+  // Measure the end time
+  auto end = std::chrono::high_resolution_clock::now();
+
+  // Calculate the duration in seconds
+  std::chrono::duration<double> const duration = end - start;
+  double const elapsed_time = duration.count();
+
+  // Check if the operation completes within the expected time threshold
+  constexpr double max_allowed_time = execution_time; // seconds
+  ASSERT_LE(elapsed_time, max_allowed_time) << "Execution time exceeded for lake-large.ppm with maxlevel 65535";
+
+  std::cout << "Execution time for maxlevel: " << elapsed_time << " seconds\n";
+}
+
+namespace {
+  void validateScaledPixels(const Image& originalImage, const Image& scaledImage, int new_max_value) {
+    double const scaling_factor = static_cast<double>(new_max_value) / originalImage.max_color_value;
+
+    for (size_t i = 0; i < originalImage.pixels.size(); ++i) {
+      auto const& originalPixel = originalImage.pixels[i];
+      auto const& scaledPixel = scaledImage.pixels[i];
+
+      // Calculate the expected scaled values
+      int expectedR = static_cast<int>(std::floor(originalPixel.r * scaling_factor));
+      int expectedG = static_cast<int>(std::floor(originalPixel.g * scaling_factor));
+      int expectedB = static_cast<int>(std::floor(originalPixel.b * scaling_factor));
+
+      expectedR = std::clamp(expectedR, 0, new_max_value);
+      expectedG = std::clamp(expectedG, 0, new_max_value);
+      expectedB = std::clamp(expectedB, 0, new_max_value);
+
+      // Validate that the scaled pixel values match the expected values
+      ASSERT_EQ(scaledPixel.r, expectedR) << "Red channel mismatch at pixel " << i;
+      ASSERT_EQ(scaledPixel.g, expectedG) << "Green channel mismatch at pixel " << i;
+      ASSERT_EQ(scaledPixel.b, expectedB) << "Blue channel mismatch at pixel " << i;
+    }
+  }
+
+}
+
+TEST(MaxLevelTest, TestEdgeCaseMaxLevel1) {
+    std::string const inputPath = "/Users/sanjana/Downloads/input/deer-small.ppm";
+    Image const originalImage = read_ppm(inputPath);
+
+    Image scaledImage = originalImage;
+    ImageAOS::maxlevel(scaledImage, new_max_value1);
+
+    validateScaledPixels(originalImage, scaledImage, new_max_value1);
+}
+
+TEST(MaxLevelTest, TestIntermediateCaseMaxLevel128) {
+    std::string const inputPath = "/Users/sanjana/Downloads/input/deer-small.ppm";
+    Image const originalImage = read_ppm(inputPath);
+
+    Image scaledImage = originalImage;
+    ImageAOS::maxlevel(scaledImage, new_max_value128);
+
+    validateScaledPixels(originalImage, scaledImage, new_max_value128);
+}
+
+TEST(MaxLevelTest, TestBoundaryCaseMaxLevel512) {
+    std::string const inputPath = "/Users/sanjana/Downloads/input/deer-small.ppm";
+    Image const originalImage = read_ppm(inputPath);
+
+    Image scaledImage = originalImage;
+    ImageAOS::maxlevel(scaledImage, new_max_value512);
+
+    validateScaledPixels(originalImage, scaledImage, new_max_value512);
+}
+
+TEST(MaxLevelTest, TestBoundaryCaseMaxLevel65535) {
+  std::string const inputPath = "/Users/sanjana/Downloads/input/deer-small.ppm";
+  Image const originalImage = read_ppm(inputPath);
+
+  Image scaledImage = originalImage;
+  ImageAOS::maxlevel(scaledImage, new_max_value65535);
+
+  validateScaledPixels(originalImage, scaledImage, new_max_value65535);
+}
+

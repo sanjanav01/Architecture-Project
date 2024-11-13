@@ -12,6 +12,10 @@ constexpr static int LE_MaxByteValue = 65536;
 constexpr static int RGB_CHANNELS = 3;
 constexpr static int RGB_CHANNELS_16BIT = 6;
 
+constexpr static uint8_t LOW_BYTE_MASK = 0xFF;
+constexpr static int HIGH_BYTE_SHIFT = 8;
+
+
 Image read_ppm(const std::string& file_path) {
     std::ifstream file(file_path, std::ios::binary);
     if (!file) {throw std::runtime_error("Error: Could not open file " + file_path);}
@@ -55,34 +59,36 @@ Image read_ppm(const std::string& file_path) {
 }
 
 void write_ppm(const std::string& file_path, const Image& image) {
-    std::ofstream out_file(file_path, std::ios::binary);
-    if (!out_file) {
-        throw std::runtime_error("Could not open file for writing: " + file_path);
-    }
-    out_file << "P6\n" << image.width << " " << image.height << "\n" << image.max_color_value << "\n";
+  std::ofstream out_file(file_path, std::ios::binary);
+  if (!out_file) {
+    throw std::runtime_error("Could not open file for writing: " + file_path);
+  }
 
-    bool const use_1_byte_per_channel = (image.max_color_value <= MaxByteValue);
-    for (const auto& pixel : image.pixels) {
-      if (use_1_byte_per_channel) {
-        out_file.put(static_cast<char>(pixel.r & MaxByteValue))
-                .put(static_cast<char>(pixel.g & MaxByteValue))
-                .put(static_cast<char>(pixel.b & MaxByteValue));
-      } else {
-            const uint16_t red = pixel.r;
-            const uint16_t green = pixel.g;
-            const uint16_t blue = pixel.b;
-            const std::array<uint8_t, RGB_CHANNELS_16BIT> rgb_bytes = {
-                static_cast<uint8_t>(red >> 8), static_cast<uint8_t>(red & 0xFF),
-                static_cast<uint8_t>(green >> 8), static_cast<uint8_t>(green & 0xFF),
-                static_cast<uint8_t>(blue >> 8), static_cast<uint8_t>(blue & 0xFF)
-            };
-            out_file.write(reinterpret_cast<const char*>(rgb_bytes.data()), RGB_CHANNELS_16BIT);
-        }
-    }
+  // Write header
+  out_file << "P6\n" << image.width << " " << image.height << "\n" << image.max_color_value << "\n";
 
-    if (!out_file) {
-        throw std::runtime_error("Error writing to file: " + file_path);
+  bool const use_1_byte_per_channel = (image.max_color_value <= 255); // Check threshold for 3-byte vs. 6-byte
+
+  for (const auto& pixel : image.pixels) {
+    if (use_1_byte_per_channel) {
+      // For max_color_value <= 255, write as 3 bytes (one byte per channel)
+      out_file.put(static_cast<char>(pixel.r & LOW_BYTE_MASK))
+              .put(static_cast<char>(pixel.g & LOW_BYTE_MASK))
+              .put(static_cast<char>(pixel.b & LOW_BYTE_MASK));
+    } else {
+      // For max_color_value > 255, write as 6 bytes (two bytes per channel, little-endian)
+      out_file.put(static_cast<char>(pixel.r & LOW_BYTE_MASK))  // Low byte of Red
+              .put(static_cast<char>((pixel.r >> HIGH_BYTE_SHIFT) & LOW_BYTE_MASK)) // High byte of Red
+              .put(static_cast<char>(pixel.g & LOW_BYTE_MASK))  // Low byte of Green
+              .put(static_cast<char>((pixel.g >> HIGH_BYTE_SHIFT) & LOW_BYTE_MASK)) // High byte of Green
+              .put(static_cast<char>(pixel.b & LOW_BYTE_MASK))  // Low byte of Blue
+              .put(static_cast<char>((pixel.b >> HIGH_BYTE_SHIFT) & LOW_BYTE_MASK)); // High byte of Blue
     }
+  }
+
+  if (!out_file) {
+    throw std::runtime_error("Error writing to file: " + file_path);
+  }
 }
 
 void write_cppm(const std::string& file_path, const CompressedImage& image) {
