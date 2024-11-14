@@ -2,120 +2,132 @@
 #include <iostream>
 #include <cassert>
 
-
-
 namespace {
     constexpr uint16_t MAX_COLOR_VALUE = 255;
     constexpr int IMAGE_WIDTH = 2;
     constexpr int IMAGE_HEIGHT = 2;
 
     constexpr uint16_t RED_VALUE = 255;
-    constexpr uint16_t BLUE_VALUE = 0;
+    constexpr uint16_t GREEN_VALUE = 255;
+    constexpr uint16_t BLUE_VALUE = 255;
     constexpr uint16_t GRAY_VALUE = 128;
 
+    constexpr int RED_SHIFT = 16;
+    constexpr int GREEN_SHIFT = 8;
+
+    // Helper function to encode RGB into a uint32_t with bit-shifting
+    constexpr uint32_t encodeColor(uint16_t red, uint16_t green, uint16_t blue) {
+        return (static_cast<uint32_t>(red) << RED_SHIFT) |
+               (static_cast<uint32_t>(green) << GREEN_SHIFT) |
+               static_cast<uint32_t>(blue);
+    }
+
     void test_basic_compression() {
-        // Create a simple ImageAOS instance with a 2x2 image of distinct colors
-        ImageAOS image;
+        Image image;
         image.width = IMAGE_WIDTH;
         image.height = IMAGE_HEIGHT;
-        image.maxColorValue = MAX_COLOR_VALUE;
+        image.max_color_value = MAX_COLOR_VALUE;
+
+        // Initialize pixels in AoS format
         image.pixels = {
-            { .red = RED_VALUE, .green = BLUE_VALUE, .blue = BLUE_VALUE },   // Red
-            { .red = BLUE_VALUE, .green = RED_VALUE, .blue = BLUE_VALUE },   // Green
-            { .red = BLUE_VALUE, .green = BLUE_VALUE, .blue = RED_VALUE },   // Blue
-            { .red = RED_VALUE, .green = RED_VALUE, .blue = BLUE_VALUE }     // Yellow
+            Pixel{.r = RED_VALUE, .g = 0, .b = 0},         // Red
+            Pixel{.r = 0, .g = GREEN_VALUE, .b = 0},       // Green
+            Pixel{.r = 0, .g = 0, .b = BLUE_VALUE},        // Blue
+            Pixel{.r = RED_VALUE, .g = GREEN_VALUE, .b = 0} // Yellow
         };
 
-        const CompressedImageAOS compressedImage = compress_aos(image);
+        const CompressedImage compressedImage = compress_aos(image);
 
         // Check metadata
-        assert(compressedImage.magicNumber == "C6");
         assert(compressedImage.width == image.width);
         assert(compressedImage.height == image.height);
-        assert(compressedImage.maxColorValue == image.maxColorValue);
-        assert(compressedImage.colorTableSize == 4);
+        assert(compressedImage.max_color == image.max_color_value);
 
-        // Verify the color table values (flattened RGB)
-        const std::vector<uint16_t> expectedColorTable = {
-            RED_VALUE, BLUE_VALUE, BLUE_VALUE,    // Red
-            BLUE_VALUE, RED_VALUE, BLUE_VALUE,    // Green
-            BLUE_VALUE, BLUE_VALUE, RED_VALUE,    // Blue
-            RED_VALUE, RED_VALUE, BLUE_VALUE      // Yellow
+        // Verify the color table size (4 unique colors)
+        assert(compressedImage.color_table.size() == 4);
+
+        // Expected color table values using helper function
+        const std::vector<uint32_t> expectedColorTable = {
+            encodeColor(RED_VALUE, 0, 0),            // Red
+            encodeColor(0, GREEN_VALUE, 0),          // Green
+            encodeColor(0, 0, BLUE_VALUE),           // Blue
+            encodeColor(RED_VALUE, GREEN_VALUE, 0)   // Yellow
         };
-        assert(compressedImage.colorTable == expectedColorTable);
+        assert(compressedImage.color_table == expectedColorTable);
 
-        // Verify the pixel indices (they should map to the colors in the color table)
         const std::vector<uint32_t> expectedPixelIndices = {0, 1, 2, 3};
-        assert(compressedImage.pixelIndices == expectedPixelIndices);
+        assert(compressedImage.pixel_indices == expectedPixelIndices);
 
         std::cout << "test_basic_compression passed.\n";
     }
 
     void test_duplicate_colors() {
-        // Create an image where some pixels have the same color
-        ImageAOS image;
+        Image image;
         image.width = IMAGE_WIDTH;
         image.height = IMAGE_HEIGHT;
-        image.maxColorValue = MAX_COLOR_VALUE;
+        image.max_color_value = MAX_COLOR_VALUE;
+
+        // Initialize duplicate colors in AoS format
         image.pixels = {
-            { .red = RED_VALUE, .green = BLUE_VALUE, .blue = BLUE_VALUE },   // Red
-            { .red = RED_VALUE, .green = BLUE_VALUE, .blue = BLUE_VALUE },   // Red
-            { .red = BLUE_VALUE, .green = RED_VALUE, .blue = BLUE_VALUE },   // Green
-            { .red = BLUE_VALUE, .green = RED_VALUE, .blue = BLUE_VALUE }    // Green
+            Pixel{.r = RED_VALUE, .g = 0, .b = 0},         // Red
+            Pixel{.r = RED_VALUE, .g = 0, .b = 0},         // Red
+            Pixel{.r = 0, .g = GREEN_VALUE, .b = 0},       // Green
+            Pixel{.r = 0, .g = GREEN_VALUE, .b = 0}        // Green
         };
 
-        const CompressedImageAOS compressedImage = compress_aos(image);
+        const CompressedImage compressedImage = compress_aos(image);
 
         // Check metadata
-        assert(compressedImage.magicNumber == "C6");
         assert(compressedImage.width == image.width);
         assert(compressedImage.height == image.height);
-        assert(compressedImage.maxColorValue == image.maxColorValue);
-        assert(compressedImage.colorTableSize == 2);
+        assert(compressedImage.max_color == image.max_color_value);
 
-        // Verify the color table values (flattened RGB)
-        const std::vector<uint16_t> expectedColorTable = {
-            RED_VALUE, BLUE_VALUE, BLUE_VALUE,    // Red
-            BLUE_VALUE, RED_VALUE, BLUE_VALUE     // Green
+        // Verify the color table size (2 unique colors)
+        assert(compressedImage.color_table.size() == 2);
+
+        const std::vector<uint32_t> expectedColorTable = {
+            encodeColor(RED_VALUE, 0, 0),          // Red
+            encodeColor(0, GREEN_VALUE, 0)         // Green
         };
-        assert(compressedImage.colorTable == expectedColorTable);
+        assert(compressedImage.color_table == expectedColorTable);
 
-        // Verify the pixel indices (should reference only two unique colors)
         const std::vector<uint32_t> expectedPixelIndices = {0, 0, 1, 1};
-        assert(compressedImage.pixelIndices == expectedPixelIndices);
+        assert(compressedImage.pixel_indices == expectedPixelIndices);
 
         std::cout << "test_duplicate_colors passed.\n";
     }
 
     void test_single_color_image() {
-        // Create an image where all pixels are the same color
-        ImageAOS image;
+        Image image;
         image.width = IMAGE_WIDTH;
         image.height = IMAGE_HEIGHT;
-        image.maxColorValue = MAX_COLOR_VALUE;
+        image.max_color_value = MAX_COLOR_VALUE;
+
+        // Initialize a single color in AoS format
         image.pixels = {
-            { .red = GRAY_VALUE, .green = GRAY_VALUE, .blue = GRAY_VALUE }, // Gray
-            { .red = GRAY_VALUE, .green = GRAY_VALUE, .blue = GRAY_VALUE }, // Gray
-            { .red = GRAY_VALUE, .green = GRAY_VALUE, .blue = GRAY_VALUE }, // Gray
-            { .red = GRAY_VALUE, .green = GRAY_VALUE, .blue = GRAY_VALUE }  // Gray
+            Pixel{.r = GRAY_VALUE, .g = GRAY_VALUE, .b = GRAY_VALUE},
+            Pixel{.r = GRAY_VALUE, .g = GRAY_VALUE, .b = GRAY_VALUE},
+            Pixel{.r = GRAY_VALUE, .g = GRAY_VALUE, .b = GRAY_VALUE},
+            Pixel{.r = GRAY_VALUE, .g = GRAY_VALUE, .b = GRAY_VALUE}
         };
 
-        const CompressedImageAOS compressedImage = compress_aos(image);
+        const CompressedImage compressedImage = compress_aos(image);
 
         // Check metadata
-        assert(compressedImage.magicNumber == "C6");
         assert(compressedImage.width == image.width);
         assert(compressedImage.height == image.height);
-        assert(compressedImage.maxColorValue == image.maxColorValue);
-        assert(compressedImage.colorTableSize == 1);
+        assert(compressedImage.max_color == image.max_color_value);
 
-        // Verify the color table values (flattened RGB)
-        const std::vector<uint16_t> expectedColorTable = {GRAY_VALUE, GRAY_VALUE, GRAY_VALUE}; // Gray
-        assert(compressedImage.colorTable == expectedColorTable);
+        // Verify that there is only one color in the color table
+        assert(compressedImage.color_table.size() == 1);
 
-        // Verify the pixel indices (should all reference the single color)
+        const std::vector<uint32_t> expectedColorTable = {
+            encodeColor(GRAY_VALUE, GRAY_VALUE, GRAY_VALUE)
+        };
+        assert(compressedImage.color_table == expectedColorTable);
+
         const std::vector<uint32_t> expectedPixelIndices = {0, 0, 0, 0};
-        assert(compressedImage.pixelIndices == expectedPixelIndices);
+        assert(compressedImage.pixel_indices == expectedPixelIndices);
 
         std::cout << "test_single_color_image passed.\n";
     }

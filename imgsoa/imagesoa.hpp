@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <cstdint> // For uint16_t, uint32_t
-#include <string>  // For std::string
+#include "common/image_types.hpp" // For Image, Pixel, etc.
 
 struct ImageSOA {
   std::vector<uint16_t> red;
@@ -14,17 +14,10 @@ struct ImageSOA {
   uint16_t maxColorValue;
 };
 
-struct CompressedImageSOA {
-  std::string magicNumber;
-  int width;
-  int height;
-  uint16_t maxColorValue;
-  int colorTableSize;
-  std::vector<uint16_t> colorTable;
-  std::vector<uint32_t> pixelIndices;
-};
+// CompressedImage should already be defined in image_types.hpp or a related file
 
-// Function declaration
-CompressedImageSOA compress_soa(const ImageSOA& image);
+// Function declarations
+CompressedImage compress_soa(const Image& image);
+Image decompress_soa(const CompressedImage& compressedImage);
 
 #endif // IMGSOA_HPP
