@@ -1,9 +1,8 @@
 # CMakeLists.txt in utest-imgaos
 add_executable(utest-img-aos
-       # compress_test_aos.cpp
-        compress_test_aos_image.cpp
         ../common/binary.cpp  # Corrected path
         ../helpers/helpers.cpp
+        compress_test_aos.cpp
 )
 
 target_link_libraries(utest-img-aos

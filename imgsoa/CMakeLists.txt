@@ -1,5 +1,6 @@
 add_library(imgsoa
         imagesoa.cpp
+        imagesoa.hpp
 )
 target_include_directories(imgsoa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 

@@ -1,7 +1,8 @@
 # CMakeLists.txt in utest-imgsoa
 add_executable(utest-img-soa
-        # Assuming the test file name
-        compress_test_soa.cpp  # Assuming the test file name
+        ../common/binary.cpp  # Corrected path
+        ../helpers/helpers.cpp
+        compress_test_soa.cpp
 )
 
 target_link_libraries(utest-img-soa
