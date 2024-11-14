@@ -144,6 +144,42 @@ TEST(CompressTestSOA, DeerSmall) {
     }
 }
 
+TEST(CompressTestSOA, DeerLarge) {
+    const std::string inputPath = "/Users/kalyani/Documents/CompArch/Input:Output/input/deer-large.ppm";
+    const std::string generatedOutputPath = "/Users/kalyani/Documents/CompArch/Architecture-Project/test-outputs/deer-large-output.cppm";
+    const std::string decompressedOutputPath = "/Users/kalyani/Documents/CompArch/Architecture-Project/test-outputs/deer-large-decompressed.ppm";
+
+    const Image inputImage = read_ppm(inputPath);
+    const CompressedImage compressedImage = compress_soa(inputImage);
+    write_cppm(generatedOutputPath, compressedImage);
+
+    const Image decompressedImage = decompress_soa(compressedImage);
+    write_ppm(decompressedOutputPath, decompressedImage);
+
+    ASSERT_EQ(inputImage.width, decompressedImage.width);
+    ASSERT_EQ(inputImage.height, decompressedImage.height);
+    ASSERT_EQ(inputImage.max_color_value, decompressedImage.max_color_value);
+    ASSERT_EQ(inputImage.pixels.size(), decompressedImage.pixels.size());
+
+    bool pixels_match = true;
+    for (size_t i = 0; i < inputImage.pixels.size(); ++i) {
+        if (!pixelsEqual(inputImage.pixels[i], decompressedImage.pixels[i])) {
+            std::cout << "Pixel mismatch at index " << i
+                      << ": Original(R,G,B) = (" << inputImage.pixels[i].r << ", "
+                      << inputImage.pixels[i].g << ", " << inputImage.pixels[i].b << ") "
+                      << "Decompressed(R,G,B) = (" << decompressedImage.pixels[i].r << ", "
+                      << decompressedImage.pixels[i].g << ", " << decompressedImage.pixels[i].b << ")\n";
+            pixels_match = false;
+            break;
+        }
+    }
+    ASSERT_TRUE(pixels_match) << "Pixels do not match between original and decompressed images.";
+
+    if (pixels_match) {
+        ASSERT_TRUE(compareImages(decompressedOutputPath, inputPath)) << "Images differ after decompression in binary comparison";
+    }
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
