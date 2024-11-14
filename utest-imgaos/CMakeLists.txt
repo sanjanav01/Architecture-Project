@@ -1,8 +1,10 @@
 # CMakeLists.txt in utest-imgaos
 add_executable(utest-img-aos
         cutfreq_aos_test.cpp
-        cutfreq_aos_test.cpp
         maxlevel_test.cpp  # Assuming the test file name
+        ../common/binary.cpp  # Corrected path
+        ../helpers/helpers.cpp
+        compress_test_aos.cpp
 )
 
 target_link_libraries(utest-img-aos

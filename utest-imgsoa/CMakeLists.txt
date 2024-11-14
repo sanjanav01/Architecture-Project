@@ -2,7 +2,9 @@
 add_executable(utest-img-soa
         cutfreq_soa_test.cpp
         cutfreq_soa_test.cpp
-        maxlevel_test_soa.cpp  # Assuming the test file name
+        maxlevel_test_soa.cpp
+        compress_test_soa.cpp
+        # Assuming the test file name
 )
 
 target_link_libraries(utest-img-soa

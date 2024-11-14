@@ -2,6 +2,7 @@
 #define IMAGESOA_HPP
 
 #include <vector>
+#include "common/image_types.hpp" // For Image, Pixel, etc.
 
 // Wrapper types for safer parameter passing
 struct Width {
@@ -36,6 +37,10 @@ class ImageSOA {
 
   // Function to apply maxlevel scaling
   void maxlevel(int new_max_value);
+
 };
 
+// Function declarations
+CompressedImage compress_soa(const Image& image);
+Image decompress_soa(const CompressedImage& compressedImage);
 #endif // IMAGESOA_HPP
