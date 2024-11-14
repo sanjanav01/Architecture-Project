@@ -1,3 +1,5 @@
+// imageaos.cpp
+
 #include "imageaos.hpp"
 #include <unordered_map>
 #include <tuple>
@@ -9,10 +11,10 @@
 struct TupleHash {
     std::size_t operator()(const std::tuple<uint16_t, uint16_t, uint16_t>& tuple) const {
         // Combine the hash of each element in the tuple
-        std::size_t h1 = std::hash<uint16_t>()(std::get<0>(tuple));
-        std::size_t h2 = std::hash<uint16_t>()(std::get<1>(tuple));
-        std::size_t h3 = std::hash<uint16_t>()(std::get<2>(tuple));
-        return h1 ^ (h2 << 1) ^ (h3 << 2); // XOR and shift combination
+        const std::size_t redHash = std::hash<uint16_t>()(std::get<0>(tuple));
+        const std::size_t greenHash = std::hash<uint16_t>()(std::get<1>(tuple));
+        const std::size_t blueHash = std::hash<uint16_t>()(std::get<2>(tuple));
+        return redHash ^ (greenHash << 1) ^ (blueHash << 2); // XOR and shift combination
     }
 };
 
