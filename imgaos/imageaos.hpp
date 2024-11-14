@@ -34,19 +34,6 @@ struct CompressedImageAOS {
   std::vector<uint32_t> pixelIndices;
 };
 
-// Define the new CompressedImage struct
-// struct CompressedImage {
-//   int width;
-//   int height;
-//   uint16_t maxColorValue;
-//   std::vector<uint16_t> colorTable;   // Stores flattened color values in RGB sequence
-//   std::vector<uint32_t> pixelIndices; // Stores indices referring to entries in colorTable
-//
-//   // Optionally, add a constructor for easy initialization
-//   CompressedImage(int w = 0, int h = 0, uint16_t maxColor = 255)
-//       : width(w), height(h), maxColorValue(maxColor) {}
-// };
-
 // Function declaration for compress_aos, which now returns CompressedImage
 CompressedImage compress_aos(const Image& image);
 Image decompress(const CompressedImage& compressedImage);
