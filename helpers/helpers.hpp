@@ -4,6 +4,7 @@
 #include <map>
 #include <tuple>
 #include <vector>
+#include "common/image_types.hpp"
 
 // Struct to encapsulate R, G, and B channels
 struct ColorChannels {
@@ -11,6 +12,9 @@ struct ColorChannels {
     std::vector<int> G;
     std::vector<int> B;
 };
+
+bool compareImages(const std::string& file1, const std::string& file2);
+bool compareImagesByPixel(const Image& image1, const Image& image2);
 
 // Helper function declarations
 std::map<std::tuple<int, int, int>, int> calculateColorFrequencies(

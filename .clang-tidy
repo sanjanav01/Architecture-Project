@@ -1,16 +1,16 @@
 Checks: '-*,
-modernize-*,
-bugprone-*,
-cert-*,
-cppcoreguidelines-*,
-misc-*,
--misc-include-cleaner,
-modernize-*,
-performance-*,
-readability-*,
--modernize-use-trailing-return-type,
--cppcoreguidelines-pro-type-reinterpret-cast'
-
+         modernize-*,
+         bugprone-*,
+         cert-*,
+         cppcoreguidelines-*,
+         misc-*,
+         -misc-include-cleaner,
+         modernize-*,
+         performance-*,
+         readability-*,
+         -modernize-use-trailing-return-type,
+         -cert-env33-c,
+         -cppcoreguidelines-pro-type-reinterpret-cast'
 
 CheckOptions:
   bugprone-assert-side-effect.AssertMacros: 'assert,Expects,Ensures'

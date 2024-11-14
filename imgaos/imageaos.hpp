@@ -2,12 +2,7 @@
 #define IMAGEAOS_HPP
 
 #include <vector>
-
-struct Pixel {
-    mutable int R;
-    mutable int G;
-    mutable int B;
-};
+#include "common/image_types.hpp"
 
 class ImageAOS {
 public:
@@ -17,14 +12,7 @@ public:
 
     ImageAOS(int width, int height);
 
-    ImageAOS(int width, int height, uint16_t uint16);
-
     void cutfreq(int frequency_threshold);
-
+    static Image resize_aos(const Image& image, int new_width, int new_height);
 };
-ImageAOS resize_aos(const ImageAOS& image, int new_width, int new_height);
-
 #endif // IMAGEAOS_HPP
-
-
-

@@ -12,6 +12,9 @@ constexpr static int LE_MaxByteValue = 65536;
 constexpr static int RGB_CHANNELS = 3;
 constexpr static int RGB_CHANNELS_16BIT = 6;
 
+constexpr static uint8_t LOW_BYTE_MASK = 0xFF;
+constexpr static int HIGH_BYTE_SHIFT = 8;
+
 Image read_ppm(const std::string& file_path) {
     std::ifstream file(file_path, std::ios::binary);
     if (!file) {throw std::runtime_error("Error: Could not open file " + file_path);}
@@ -54,7 +57,7 @@ Image read_ppm(const std::string& file_path) {
     return image;
 }
 
-void write_ppm(const std::string& file_path, const Image& image) {
+/*void write_ppm(const std::string& file_path, const Image& image) {
     std::ofstream out_file(file_path, std::ios::binary);
     if (!out_file) {
         throw std::runtime_error("Could not open file for writing: " + file_path);
@@ -77,6 +80,39 @@ void write_ppm(const std::string& file_path, const Image& image) {
                 static_cast<uint8_t>(blue >> 8), static_cast<uint8_t>(blue & 0xFF)
             };
             out_file.write(reinterpret_cast<const char*>(rgb_bytes.data()), RGB_CHANNELS_16BIT);
+        }
+    }
+
+    if (!out_file) {
+        throw std::runtime_error("Error writing to file: " + file_path);
+    }
+}
+*/
+void write_ppm(const std::string& file_path, const Image& image) {
+    std::ofstream out_file(file_path, std::ios::binary);
+    if (!out_file) {
+        throw std::runtime_error("Could not open file for writing: " + file_path);
+    }
+
+    // Write header
+    out_file << "P6\n" << image.width << " " << image.height << "\n" << image.max_color_value << "\n";
+
+    bool const use_1_byte_per_channel = (image.max_color_value <= 255); // Check threshold for 3-byte vs. 6-byte
+
+    for (const auto& pixel : image.pixels) {
+        if (use_1_byte_per_channel) {
+            // For max_color_value <= 255, write as 3 bytes (one byte per channel)
+            out_file.put(static_cast<char>(pixel.r & LOW_BYTE_MASK))
+                    .put(static_cast<char>(pixel.g & LOW_BYTE_MASK))
+                    .put(static_cast<char>(pixel.b & LOW_BYTE_MASK));
+        } else {
+            // For max_color_value > 255, write as 6 bytes (two bytes per channel, little-endian)
+            out_file.put(static_cast<char>(pixel.r & LOW_BYTE_MASK))  // Low byte of Red
+                    .put(static_cast<char>((pixel.r >> HIGH_BYTE_SHIFT) & LOW_BYTE_MASK)) // High byte of Red
+                    .put(static_cast<char>(pixel.g & LOW_BYTE_MASK))  // Low byte of Green
+                    .put(static_cast<char>((pixel.g >> HIGH_BYTE_SHIFT) & LOW_BYTE_MASK)) // High byte of Green
+                    .put(static_cast<char>(pixel.b & LOW_BYTE_MASK))  // Low byte of Blue
+                    .put(static_cast<char>((pixel.b >> HIGH_BYTE_SHIFT) & LOW_BYTE_MASK)); // High byte of Blue
         }
     }
 

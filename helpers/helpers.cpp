@@ -1,6 +1,49 @@
 #include "helpers.hpp"
+#include "common/image_types.hpp"
 #include <cmath>
 #include <limits>
+#include <cstdlib>
+#include <string>
+#include <iostream>
+#include <tuple>
+
+bool compareImagesByPixel(const Image& image1, const Image& image2) {
+    if (image1.width != image2.width || image1.height != image2.height) {
+        std::cout << image1.width << " x " << image1.height << '\n';
+        std::cout << image2.width << " x " << image2.height << '\n';
+        std::cout << "Images have different dimensions and cannot be compared." << '\n';
+        return false;
+    }
+    bool identical = true;
+    for (int hgt = 0; hgt < image1.height; ++hgt) {
+        for (int wdt = 0; wdt < image1.width; ++wdt) {
+            if (const size_t index = (static_cast<size_t>(hgt) * static_cast<size_t>(image1.width)) + static_cast<size_t>(wdt); image1.pixels[index].r != image2.pixels[index].r || image1.pixels[index].g != image2.pixels[index].g || image1.pixels[index].b != image2.pixels[index].b) {
+                identical = false;
+                std::cout << "Difference at (" << wdt << ", " << hgt << "): "
+                          << "Image1 RGB(" << image1.pixels[index].r << ", "
+                          << image1.pixels[index].g << ", " << image1.pixels[index].b << ") vs "
+                          << "Image2 RGB(" << image2.pixels[index].r << ", "
+                          << image2.pixels[index].g << ", " << image2.pixels[index].b << ")"
+                          << '\n';
+                }
+        }
+    }
+    if (identical) {
+        std::cout << "Images are identical." << '\n';
+    }
+    return identical;
+}
+
+  bool compareImages(const std::string& file1, const std::string& file2) {
+    // Construct the cmp command
+    std::string const command = "cmp -s " + file1 + " " + file2;
+
+    // Execute the command and capture the result
+    int const result = std::system(command.c_str());
+
+    // Return true if files are identical, false otherwise
+    return result == 0;
+  }
 
 // Definition of calculateColorFrequencies
 std::map<std::tuple<int, int, int>, int> calculateColorFrequencies(
@@ -69,3 +112,4 @@ std::tuple<int, int, int> findClosestColor(
 
     return closest_color;
 }
+
