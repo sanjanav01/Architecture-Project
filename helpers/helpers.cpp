@@ -1,23 +1,82 @@
 #include "helpers.hpp"
+#include "common/image_types.hpp"
 #include <cmath>
 #include <limits>
 #include <cstdlib>
 #include <string>
+#include <iostream>
+#include <tuple>
+#include <imgsoa/imagesoa.hpp>
+constexpr static int FIVE = 5;
 
-// Helper function to compare two images using `cmp` command
+bool compareImageAndSOA(const Image& image, const ImageSOA& soa_image) {
+    if (image.width != soa_image.width || image.height != soa_image.height) {
+        std::cout << "diff dimensions. Image: " << image.width << "x" << image.height
+                  << " vs SOA Image: " << soa_image.width << "x" << soa_image.height << "\n";
+        return false;
+    }
+    bool identical = true;
+    for (int hgt = 0; hgt < image.height; ++hgt) {
+        for (int wdt = 0; wdt < image.width; ++wdt) {
+            const size_t index = (static_cast<size_t>(hgt) * static_cast<size_t>(image.width)) + static_cast<size_t>(wdt);
+            const Pixel& img_pixel = image.pixels[index];
+            const int soa_r = soa_image.R[index];
+            const int soa_g = soa_image.G[index];
+            const int soa_b = soa_image.B[index];
+            if (std::abs(img_pixel.r - soa_r) > FIVE || std::abs(img_pixel.g - soa_g) > FIVE || std::abs(img_pixel.b - soa_b) > FIVE) {
+                identical = false;
+                std::cout << "diff at (" << wdt << ", " << hgt << "): "
+                          << "image RGB(" << img_pixel.r << ", " << img_pixel.g << ", " << img_pixel.b << ") vs "
+                          << "soa RGB(" << soa_r << ", " << soa_g << ", " << soa_b << ")\n";
+            }
+        }
+    }
+    if (identical) {
+        std::cout << "equal soa and image\n";
+    }
+    return identical;
+}
 
-  bool compareImages(const std::string& file1, const std::string& file2) {
-    // Construct the cmp command
+bool compareImagesByPixel(const Image& image1, const Image& image2) {
+    if (image1.width != image2.width || image1.height != image2.height) {
+        std::cout << image1.width << " x " << image1.height << '\n';
+        std::cout << image2.width << " x " << image2.height << '\n';
+        std::cout << "diff dimensions" << '\n';
+        return false;
+    }
+    // int total = 0;
+    // int diff = 0;
+    bool equivalent = true;
+    for (int hgt = 0; hgt < image1.height; ++hgt) {
+        for (int wdt = 0; wdt < image1.width; ++wdt) {
+            // total += 1;
+            const size_t index = (static_cast<size_t>(hgt) * static_cast<size_t>(image1.width)) + static_cast<size_t>(wdt);
+            const auto& pix1 = image1.pixels[index];
+            const auto& pix2 = image2.pixels[index];
+            if (std::abs(pix1.r - pix2.r) > FIVE || std::abs(pix1.g - pix2.g) > FIVE || std::abs(pix1.b - pix2.b) > FIVE) {
+                equivalent = false;
+                // diff += 1;
+                std::cout << "Diff at (" << wdt << ", " << hgt << "): "
+                          << "Image1 RGB(" << pix1.r << ", " << pix1.g << ", " << pix1.b << ") vs "
+                          << "Image2 RGB(" << pix2.r << ", " << pix2.g << ", " << pix2.b << ")\n";
+            }
+        }
+    }
+    //std::cout << "Total Pixels: " << total << "Diff Pixels: " << diff << "\n";
+    if (equivalent) {
+        std::cout << "Equal <=5" << '\n';
+    }
+    return equivalent;
+}
+
+
+bool compareImages(const std::string& file1, const std::string& file2) {
     std::string const command = "cmp -s " + file1 + " " + file2;
-
-    // Execute the command and capture the result
+    // NOLINTNEXTLINE(cert-env33-c, misc-system-command)
     int const result = std::system(command.c_str());
-
-    // Return true if files are identical, false otherwise
     return result == 0;
-  }
+}
 
-// Definition of calculateColorFrequencies
 std::map<std::tuple<int, int, int>, int> calculateColorFrequencies(
     const ColorChannels& channels) {
     std::map<std::tuple<int, int, int>, int> color_freq;
@@ -28,7 +87,6 @@ std::map<std::tuple<int, int, int>, int> calculateColorFrequencies(
     return color_freq;
 }
 
-// Definition of getInfrequentColors
 std::vector<std::tuple<int, int, int>> getInfrequentColors(
     const std::map<std::tuple<int, int, int>, int>& color_freq,
     int frequency_threshold) {
@@ -41,7 +99,6 @@ std::vector<std::tuple<int, int, int>> getInfrequentColors(
     return infrequent_colors;
 }
 
-// Definition of replaceInfrequentColors with ColorChannels struct
 void replaceInfrequentColors(
     ColorChannels& channels,
     const std::map<std::tuple<int, int, int>, int>& color_freq,
@@ -58,7 +115,6 @@ void replaceInfrequentColors(
     }
 }
 
-// Definition of findClosestColor
 std::tuple<int, int, int> findClosestColor(
     const std::tuple<int, int, int>& color,
     const std::map<std::tuple<int, int, int>, int>& color_freq,
@@ -84,5 +140,3 @@ std::tuple<int, int, int> findClosestColor(
 
     return closest_color;
 }
-
-

@@ -49,8 +49,11 @@ TEST(BinaryIO, WritePPM) {
         uint8_t red = 0;
         uint8_t green = 0;
         uint8_t blue = 0;
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
         file.read(reinterpret_cast<char*>(&red), 1);
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
         file.read(reinterpret_cast<char*>(&green), 1);
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
         file.read(reinterpret_cast<char*>(&blue), 1);
         ASSERT_EQ(red, static_cast<uint8_t>(pixel.r));
         ASSERT_EQ(green, static_cast<uint8_t>(pixel.g));

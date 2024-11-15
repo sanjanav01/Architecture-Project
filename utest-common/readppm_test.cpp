@@ -18,7 +18,7 @@ TEST(ReadPPMTest, ValidPPMFile) {
         0, 0, MAGIC,     // Blue
         MAGIC, MAGIC, 0    // Yellow
     };
-
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
     file.write(reinterpret_cast<char*>(pixel_data.data()), static_cast<std::streamsize>(pixel_data.size()));
 
     file.close();

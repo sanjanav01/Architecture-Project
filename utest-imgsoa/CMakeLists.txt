@@ -4,6 +4,7 @@ add_executable(utest-img-soa
         cutfreq_soa_test.cpp
         maxlevel_test_soa.cpp
         compress_test_soa.cpp
+        resize_test.cpp
         # Assuming the test file name
 )
 

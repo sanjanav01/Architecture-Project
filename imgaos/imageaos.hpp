@@ -32,6 +32,7 @@ class ImageAOS {
 
   void cutfreq(int frequency_threshold);
   static void maxlevel(Image & image, int new_max_value);
+  static Image resize(const Image& image, int new_width, int new_height);
 };
 
 // Function declaration for compress_aos, which now returns CompressedImage

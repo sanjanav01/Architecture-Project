@@ -5,6 +5,7 @@ add_executable(utest-img-aos
         ../common/binary.cpp  # Corrected path
         ../helpers/helpers.cpp
         compress_test_aos.cpp
+        resize_test.cpp
 )
 
 target_link_libraries(utest-img-aos

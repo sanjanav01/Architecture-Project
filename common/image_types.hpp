@@ -9,6 +9,10 @@ struct Pixel {
 };
 
 struct Image {
+
+    Image() = default;  // Default constructor
+    Image(int width, int height) : width(width), height(height), pixels(static_cast<std::vector<Pixel>::size_type>(width * height)) {}
+
     int width = 0;
     int height = 0;
     int max_color_value = 0;
