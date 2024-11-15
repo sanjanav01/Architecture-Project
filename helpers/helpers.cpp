@@ -77,6 +77,7 @@ bool compareImages(const std::string& file1, const std::string& file2) {
     return result == 0;
 }
 
+// Definition of calculateColorFrequencies
 std::map<std::tuple<int, int, int>, int> calculateColorFrequencies(
     const ColorChannels& channels) {
     std::map<std::tuple<int, int, int>, int> color_freq;
@@ -87,6 +88,7 @@ std::map<std::tuple<int, int, int>, int> calculateColorFrequencies(
     return color_freq;
 }
 
+// Definition of getInfrequentColors
 std::vector<std::tuple<int, int, int>> getInfrequentColors(
     const std::map<std::tuple<int, int, int>, int>& color_freq,
     int frequency_threshold) {
@@ -99,6 +101,7 @@ std::vector<std::tuple<int, int, int>> getInfrequentColors(
     return infrequent_colors;
 }
 
+// Definition of replaceInfrequentColors with ColorChannels struct
 void replaceInfrequentColors(
     ColorChannels& channels,
     const std::map<std::tuple<int, int, int>, int>& color_freq,
@@ -115,6 +118,7 @@ void replaceInfrequentColors(
     }
 }
 
+// Definition of findClosestColor
 std::tuple<int, int, int> findClosestColor(
     const std::tuple<int, int, int>& color,
     const std::map<std::tuple<int, int, int>, int>& color_freq,

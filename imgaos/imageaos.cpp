@@ -46,13 +46,13 @@ void ImageAOS::cutfreq(int frequency_threshold) {
   replaceInfrequentColors(channels, color_freq, frequency_threshold);
 
   // Update the pixels with new color values
+  // Update the pixels with new color values
   for (size_t i = 0; i < pixels.size(); ++i) {
     pixels[i].r = static_cast<uint16_t>(channels.R[i]);
     pixels[i].g = static_cast<uint16_t>(channels.G[i]);
     pixels[i].b = static_cast<uint16_t>(channels.B[i]);
   }
 }
-
 
 void ImageAOS::maxlevel(Image& image, int new_max_value) {
     if (new_max_value <= 0) {
