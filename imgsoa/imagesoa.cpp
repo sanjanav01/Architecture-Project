@@ -78,19 +78,17 @@ namespace {
   }
 }
 
-// Main cutfreq function, which uses shared helper functions for color analysis
 void ImageSOA::cutfreq(int frequency_threshold) {
-    // Create a ColorChannels instance to group R, G, and B channels
-    ColorChannels channels = {.R = R, .G = G, .B = B};
+  // Create a ColorChannels instance to group R, G, and B channels
+  ColorChannels channels = {.R=R, .G=G, .B=B};
 
-    auto color_freq = calculateColorFrequencies(channels);
-    auto infrequent_colors = getInfrequentColors(color_freq, frequency_threshold);
-    replaceInfrequentColors(channels, color_freq, frequency_threshold);
+  auto color_freq = calculateColorFrequencies(channels);
+  auto infrequent_colors = getInfrequentColors(color_freq, frequency_threshold);
+  replaceInfrequentColors(channels, color_freq, frequency_threshold);
 
-    // Update the original R, G, B channels with the modified values
-    R = channels.R;
-    G = channels.G;
-    B = channels.B;
+  R = channels.R;
+  G = channels.G;
+  B = channels.B;
 }
 
 // Main maxlevel function

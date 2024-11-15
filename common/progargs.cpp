@@ -2,7 +2,6 @@
 #include <iostream>
 #include <algorithm>
 
-
 namespace {
     constexpr int MIN_ARGS = 3;
     constexpr int MAXLEVEL_PARAM_INDEX = 4;

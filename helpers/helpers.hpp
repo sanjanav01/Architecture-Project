@@ -16,7 +16,6 @@ struct ColorChannels {
 
 bool compareImages(const std::string& file1, const std::string& file2);
 
-// Helper function declarations
 std::map<std::tuple<int, int, int>, int> calculateColorFrequencies(
     const ColorChannels& channels);
 
