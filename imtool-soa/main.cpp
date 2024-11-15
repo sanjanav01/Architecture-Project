@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
             return -1;
         }
         Image image = read_ppm(argv[1]);
-        Image resizedImage = ImageSOA::resize_soa(image, newWidth, newHeight);
+        Image resizedImage = ImageSOA::resize_soa(newWidth, image, newHeight);
         write_ppm(argv[2], resizedImage);
     }
     else if (option == "cutfreq") {
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
             return -1;
         }
         Image image = read_ppm(argv[1]);
-        image.cutfreq(threshold);
+        //image.cutfreq(threshold);
         write_ppm(argv[2], image);
     }
     else if (option == "compress") {
