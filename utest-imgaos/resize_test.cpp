@@ -2,8 +2,6 @@
 #include "common/binaryio.hpp"
 #include "imageaos.hpp"
 #include "helpers.hpp"
-//constexpr static int FIVE = 5;
-//constexpr static int TEN = 10;
 constexpr static int HUND = 100;
 constexpr static int THOUS = 1000;
 constexpr static int EIGHTTHOUS = 8000;

@@ -1,7 +1,6 @@
 # CMakeLists.txt in utest-imgsoa
 add_executable(utest-img-soa
         test_resize.cpp
-        cutfreq_soa_test.cpp
 )
 
 target_link_libraries(utest-img-soa

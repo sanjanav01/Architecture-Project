@@ -1,6 +1,5 @@
 #ifndef IMAGEAOS_HPP
 #define IMAGEAOS_HPP
-
 #include <vector>
 #include "common/image_types.hpp"
 
@@ -17,4 +16,4 @@ public:
     static void maxlevel(Image &image, int new_max_value);
     CompressedImage compress_aos(const Image& image);
 };
-#endif // IMAGEAOS_HPP
+#endif

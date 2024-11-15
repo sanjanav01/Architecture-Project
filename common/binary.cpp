@@ -57,37 +57,6 @@ Image read_ppm(const std::string& file_path) {
     return image;
 }
 
-/*void write_ppm(const std::string& file_path, const Image& image) {
-    std::ofstream out_file(file_path, std::ios::binary);
-    if (!out_file) {
-        throw std::runtime_error("Could not open file for writing: " + file_path);
-    }
-    out_file << "P6\n" << image.width << " " << image.height << "\n" << image.max_color_value << "\n";
-
-    bool const use_1_byte_per_channel = (image.max_color_value <= MaxByteValue);
-    for (const auto& pixel : image.pixels) {
-      if (use_1_byte_per_channel) {
-        out_file.put(static_cast<char>(pixel.r & MaxByteValue))
-                .put(static_cast<char>(pixel.g & MaxByteValue))
-                .put(static_cast<char>(pixel.b & MaxByteValue));
-      } else {
-            const uint16_t red = pixel.r;
-            const uint16_t green = pixel.g;
-            const uint16_t blue = pixel.b;
-            const std::array<uint8_t, RGB_CHANNELS_16BIT> rgb_bytes = {
-                static_cast<uint8_t>(red >> 8), static_cast<uint8_t>(red & 0xFF),
-                static_cast<uint8_t>(green >> 8), static_cast<uint8_t>(green & 0xFF),
-                static_cast<uint8_t>(blue >> 8), static_cast<uint8_t>(blue & 0xFF)
-            };
-            out_file.write(reinterpret_cast<const char*>(rgb_bytes.data()), RGB_CHANNELS_16BIT);
-        }
-    }
-
-    if (!out_file) {
-        throw std::runtime_error("Error writing to file: " + file_path);
-    }
-}
-*/
 void write_ppm(const std::string& file_path, const Image& image) {
     std::ofstream out_file(file_path, std::ios::binary);
     if (!out_file) {
