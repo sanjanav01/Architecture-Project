@@ -6,7 +6,46 @@
 #include <string>
 #include <iostream>
 #include <tuple>
+#include <imgsoa/imagesoa.hpp>
 constexpr static int FIVE = 5;
+
+bool compareImageAndSOA(const Image& image, const ImageSOA& soa_image) {
+    // Check dimensions
+    if (image.width != soa_image.width || image.height != soa_image.height) {
+        std::cout << "Dimensions differ. Image: " << image.width << "x" << image.height
+                  << " vs SOA Image: " << soa_image.width << "x" << soa_image.height << "\n";
+        return false;
+    }
+
+    bool identical = true;
+
+    // Compare pixels
+    for (int hgt = 0; hgt < image.height; ++hgt) {
+        for (int wdt = 0; wdt < image.width; ++wdt) {
+            const size_t index = (static_cast<size_t>(hgt) * static_cast<size_t>(image.width)) + static_cast<size_t>(wdt);
+
+            // Retrieve pixel values
+            const Pixel& img_pixel = image.pixels[index];
+            const int soa_r = soa_image.R[index];
+            const int soa_g = soa_image.G[index];
+            const int soa_b = soa_image.B[index];
+
+            // Check differences
+            if (std::abs(img_pixel.r - soa_r) > FIVE || std::abs(img_pixel.g - soa_g) > FIVE || std::abs(img_pixel.b - soa_b) > FIVE) {
+                identical = false;
+                std::cout << "Difference at (" << wdt << ", " << hgt << "): "
+                          << "Image RGB(" << img_pixel.r << ", " << img_pixel.g << ", " << img_pixel.b << ") vs "
+                          << "SOA RGB(" << soa_r << ", " << soa_g << ", " << soa_b << ")\n";
+            }
+        }
+    }
+
+    if (identical) {
+        std::cout << "The Image and ImageSOA are equivalent.\n";
+    }
+
+    return identical;
+}
 
 bool compareImagesByPixel(const Image& image1, const Image& image2) {
     if (image1.width != image2.width || image1.height != image2.height) {

@@ -5,7 +5,7 @@ add_executable(utest-img-soa
 )
 
 target_link_libraries(utest-img-soa
-        PRIVATE imgsoa  # Link the imgsoa library
+        PRIVATE imgsoa helpers common# Link the imgsoa library
         GTest::gtest_main
 )
 

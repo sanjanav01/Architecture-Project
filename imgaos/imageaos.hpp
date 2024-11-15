@@ -12,9 +12,9 @@ public:
 
     ImageAOS(int width, int height);
 
-    void cutfreq(int frequency_threshold);
-    static Image resize_aos(const Image& image, int new_width, int new_height);
-
-
+    static void cutfreq(int frequency_threshold);
+    static Image resize(const Image& image, int new_width, int new_height);
+    static void maxlevel(Image &image, int new_max_value);
+    CompressedImage compress_aos(const Image& image);
 };
 #endif // IMAGEAOS_HPP

@@ -16,7 +16,7 @@ TEST(DeerSmall, TestDeerSmallResize1000) {
 
     Image const inputImage = read_ppm(inputPath);
     Image const expOutput = read_ppm(expectedOutputPath);
-    Image const genOutput = ImageAOS::resize_aos(inputImage, THOUS, THOUS);
+    Image const genOutput = ImageAOS::resize(inputImage, THOUS, THOUS);
     write_ppm(generatedOutputPath, genOutput);
 
     EXPECT_TRUE(compareImagesByPixel(expOutput, genOutput)) << "Images differ for resize deer small to 1000";
@@ -29,7 +29,7 @@ TEST(DeerSmall, TestDeerSmallResize100) {
 
     Image const inputImage = read_ppm(inputPath);
     Image const expOutput = read_ppm(expectedOutputPath);
-    Image const genOutput = ImageAOS::resize_aos(inputImage, HUND, HUND);
+    Image const genOutput = ImageAOS::resize(inputImage, HUND, HUND);
     write_ppm(generatedOutputPath, genOutput);
 
     EXPECT_TRUE(compareImagesByPixel(expOutput, genOutput)) << "Images differ for resize deer small to 100";
@@ -42,7 +42,7 @@ TEST(DeerLarge, TestDeerLargeResize100) {
 
     Image const inputImage = read_ppm(inputPath);
     Image const expOutput = read_ppm(expectedOutputPath);
-    Image const genOutput = ImageAOS::resize_aos(inputImage, HUND, HUND);
+    Image const genOutput = ImageAOS::resize(inputImage, HUND, HUND);
     write_ppm(generatedOutputPath, genOutput);
 
     EXPECT_TRUE(compareImagesByPixel(expOutput, genOutput)) << "Images differ for resize deer large to 100";
@@ -55,7 +55,7 @@ TEST(DeerLarge, TestDeerLargeResize1000) {
 
     Image const inputImage = read_ppm(inputPath);
     Image const expOutput = read_ppm(expectedOutputPath);
-    Image const genOutput = ImageAOS::resize_aos(inputImage, THOUS, THOUS);
+    Image const genOutput = ImageAOS::resize(inputImage, THOUS, THOUS);
     write_ppm(generatedOutputPath, genOutput);
 
     EXPECT_TRUE(compareImagesByPixel(expOutput, genOutput)) << "Images differ for resize deer large to 1000";
@@ -68,7 +68,7 @@ TEST(LakeLarge, TestLakeLargeResize100) {
 
     Image const inputImage = read_ppm(inputPath);
     Image const expOutput = read_ppm(expectedOutputPath);
-    Image const genOutput = ImageAOS::resize_aos(inputImage, HUND, HUND);
+    Image const genOutput = ImageAOS::resize(inputImage, HUND, HUND);
     write_ppm(generatedOutputPath, genOutput);
 
     EXPECT_TRUE(compareImagesByPixel(expOutput, genOutput)) << "Images differ for resize lake large to 100";
@@ -81,7 +81,7 @@ TEST(LakeLarge, TestLakeLargeResize1000) {
 
     Image const inputImage = read_ppm(inputPath);
     Image const expOutput = read_ppm(expectedOutputPath);
-    Image const genOutput = ImageAOS::resize_aos(inputImage, THOUS, THOUS);
+    Image const genOutput = ImageAOS::resize(inputImage, THOUS, THOUS);
     write_ppm(generatedOutputPath, genOutput);
 
     EXPECT_TRUE(compareImagesByPixel(expOutput, genOutput)) << "Images differ for resize lake large to 1000";
@@ -94,7 +94,7 @@ TEST(LakeSmall, TestLakeSmallResize100) {
 
     Image const inputImage = read_ppm(inputPath);
     Image const expOutput = read_ppm(expectedOutputPath);
-    Image const genOutput = ImageAOS::resize_aos(inputImage, HUND, HUND);
+    Image const genOutput = ImageAOS::resize(inputImage, HUND, HUND);
     write_ppm(generatedOutputPath, genOutput);
 
     EXPECT_TRUE(compareImagesByPixel(expOutput, genOutput)) << "Images differ for resize lake small to 100";
@@ -107,7 +107,7 @@ TEST(LakeSmall, TestLakeSmallResize1000) {
 
     Image const inputImage = read_ppm(inputPath);
     Image const expOutput = read_ppm(expectedOutputPath);
-    Image const genOutput = ImageAOS::resize_aos(inputImage, THOUS, THOUS);
+    Image const genOutput = ImageAOS::resize(inputImage, THOUS, THOUS);
     write_ppm(generatedOutputPath, genOutput);
 
     EXPECT_TRUE(compareImagesByPixel(expOutput, genOutput)) << "Images differ for resize lake small to 1000";
@@ -120,7 +120,7 @@ TEST(LakeSmall, TestLakeSmallResize8000) {
     Image const inputImage = read_ppm(inputPath);
 
     const auto start = std::chrono::high_resolution_clock::now();
-    Image const genOutput = ImageAOS::resize_aos(inputImage, EIGHTTHOUS, EIGHTTHOUS);
+    Image const genOutput = ImageAOS::resize(inputImage, EIGHTTHOUS, EIGHTTHOUS);
 
     const auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> const duration = end - start;
@@ -131,7 +131,7 @@ TEST(LakeSmall, TestLakeSmallResize8000) {
 
     write_ppm(generatedOutputPath, genOutput);
 
-    Image const revertedOutput = ImageAOS::resize_aos(genOutput, 133, 100);
+    Image const revertedOutput = ImageAOS::resize(genOutput, 133, 100);
     write_ppm(revertedOutputPath, revertedOutput);
     EXPECT_TRUE(compareImagesByPixel(revertedOutput, inputImage)) << "Images differ for resize lake small to 8000";
 }
