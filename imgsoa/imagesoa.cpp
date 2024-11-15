@@ -1,34 +1,25 @@
 #include "imagesoa.hpp"
-#include "common/image_types.hpp" // Assuming this contains the definition for Image and Pixel
-#include <unordered_map>
-#include <tuple>
 #include <vector>
+#include <limits>
 
 namespace {
-    // Constants for bit shifts and max byte value
     constexpr int kRedShift = 16;
     constexpr int kGreenShift = 8;
-    constexpr int kMaxByteValue = 0xFF;
+    constexpr uint32_t kMaxByteValue = 0xFF;
 
-    // Custom hash function for std::tuple<uint16_t, uint16_t, uint16_t>
-    struct TupleHash {
-        std::size_t operator()(const std::tuple<uint16_t, uint16_t, uint16_t>& tuple) const {
-            return (static_cast<uint32_t>(std::get<0>(tuple)) << kRedShift) |
-                   (static_cast<uint32_t>(std::get<1>(tuple)) << kGreenShift) |
-                   static_cast<uint32_t>(std::get<2>(tuple));
-        }
-    };
-
-    // Helper to convert Image (AoS) to ImageSOA
+    // Function to convert Image (AoS) to SOA
     ImageSOA convertToSOA(const Image& image) {
         ImageSOA soaImage;
         soaImage.width = image.width;
         soaImage.height = image.height;
+
+        // Explicit cast to avoid compiler warnings
         soaImage.maxColorValue = static_cast<uint16_t>(image.max_color_value);
 
-        soaImage.red.reserve(image.pixels.size());
-        soaImage.green.reserve(image.pixels.size());
-        soaImage.blue.reserve(image.pixels.size());
+        const size_t numPixels = image.pixels.size();
+        soaImage.red.reserve(numPixels);
+        soaImage.green.reserve(numPixels);
+        soaImage.blue.reserve(numPixels);
 
         for (const auto& pixel : image.pixels) {
             soaImage.red.push_back(pixel.r);
@@ -38,78 +29,66 @@ namespace {
 
         return soaImage;
     }
+} // namespace
 
-    // Helper to create color table and map unique colors to indices
-    void createColorTable(const ImageSOA& soaImage,
-                          std::unordered_map<std::tuple<uint16_t, uint16_t, uint16_t>, uint32_t, TupleHash>& colorMap,
-                          std::vector<uint32_t>& colorTableOutput) {
-        colorMap.reserve(soaImage.red.size() / 2); // Estimate around 50% unique colors for large images
-
-        for (size_t i = 0; i < soaImage.red.size(); ++i) {
-            auto color = std::make_tuple(soaImage.red[i], soaImage.green[i], soaImage.blue[i]);
-            if (!colorMap.contains(color)) {
-                const uint32_t packedColor = (static_cast<uint32_t>(soaImage.red[i]) << kRedShift) |
-                                       (static_cast<uint32_t>(soaImage.green[i]) << kGreenShift) |
-                                       static_cast<uint32_t>(soaImage.blue[i]);
-                colorMap[color] = static_cast<uint32_t>(colorTableOutput.size());
-                colorTableOutput.push_back(packedColor);
-            }
-        }
-    }
-}
-
-// Main compress function using SOA structure
 CompressedImage compress_soa(const Image& image) {
     CompressedImage compressedImage;
     compressedImage.width = image.width;
     compressedImage.height = image.height;
     compressedImage.max_color = image.max_color_value;
 
-    // Step 1: Convert Image (AoS) to SoA format
     const auto soaImage = convertToSOA(image);
+    const size_t numPixels = soaImage.red.size();
 
-    // Step 2: Create a color table using a hash map to store unique colors
-    std::unordered_map<std::tuple<uint16_t, uint16_t, uint16_t>, uint32_t, TupleHash> colorMap;
-    compressedImage.color_table.reserve(soaImage.red.size() / 2); // Reserve space based on estimated unique colors
-    createColorTable(soaImage, colorMap, compressedImage.color_table);
+    // Reserve space for output containers
+    compressedImage.pixel_indices.reserve(numPixels);
+    compressedImage.color_table.reserve(numPixels / 4); // Assume 25% unique colors
 
-    // Step 3: Encode each pixel as an index in the color table
-    compressedImage.pixel_indices.reserve(soaImage.red.size());
-    for (size_t i = 0; i < soaImage.red.size(); ++i) {
-        auto color = std::make_tuple(soaImage.red[i], soaImage.green[i], soaImage.blue[i]);
-        compressedImage.pixel_indices.push_back(colorMap.at(color));
+    // Use a vector as a flat lookup table
+    constexpr size_t colorRange = 0xFFFFFF + 1; // 24-bit RGB color space
+    std::vector<uint32_t> colorToIndex(colorRange, std::numeric_limits<uint32_t>::max());
+
+    for (size_t i = 0; i < numPixels; ++i) {
+        const uint32_t packedColor = (static_cast<uint32_t>(soaImage.red[i]) << kRedShift) |
+                                     (static_cast<uint32_t>(soaImage.green[i]) << kGreenShift) |
+                                     static_cast<uint32_t>(soaImage.blue[i]);
+
+        if (colorToIndex[packedColor] == std::numeric_limits<uint32_t>::max()) {
+            // New color, add to color table and update lookup
+            colorToIndex[packedColor] = static_cast<uint32_t>(compressedImage.color_table.size());
+            compressedImage.color_table.push_back(packedColor);
+        }
+
+        // Use the index from the lookup table
+        compressedImage.pixel_indices.push_back(colorToIndex[packedColor]);
     }
 
     return compressedImage;
 }
 
-// Decompression function to reconstruct the image from compressed data
 Image decompress_soa(const CompressedImage& compressedImage) {
     Image decompressedImage;
     decompressedImage.width = compressedImage.width;
     decompressedImage.height = compressedImage.height;
     decompressedImage.max_color_value = compressedImage.max_color;
 
-    // Reserve space for decompressed pixels
-    decompressedImage.pixels.reserve(
-        static_cast<std::vector<Pixel>::size_type>(
-            static_cast<size_t>(compressedImage.width) * static_cast<size_t>(compressedImage.height))
-    );
+    const size_t totalPixels = compressedImage.pixel_indices.size();
+    decompressedImage.pixels.reserve(totalPixels);
 
-    // Rebuild the color table from the packed color values
-    std::vector<std::tuple<uint16_t, uint16_t, uint16_t>> colorTable;
-    colorTable.reserve(compressedImage.color_table.size());
-    for (const auto& packedColor : compressedImage.color_table) {
-        const auto red = static_cast<uint16_t>((packedColor >> kRedShift) & kMaxByteValue);
-        const auto green = static_cast<uint16_t>((packedColor >> kGreenShift) & kMaxByteValue);
-        const auto blue = static_cast<uint16_t>(packedColor & kMaxByteValue);
-        colorTable.emplace_back(red, green, blue);
+    // Build the color table once
+    std::vector<Pixel> colorTable(compressedImage.color_table.size());
+    for (size_t i = 0; i < compressedImage.color_table.size(); ++i) {
+        const uint32_t packedColor = compressedImage.color_table[i];
+        colorTable[i] = Pixel{
+            .r = static_cast<uint16_t>((packedColor >> kRedShift) & kMaxByteValue),
+            .g = static_cast<uint16_t>((packedColor >> kGreenShift) & kMaxByteValue),
+            .b = static_cast<uint16_t>(packedColor & kMaxByteValue)
+        };
     }
 
-    // Decode each pixel using pixel indices and the color table
+    // Map pixel indices to actual colors
     for (const auto& index : compressedImage.pixel_indices) {
-        const auto& color = colorTable[index];
-        decompressedImage.pixels.push_back({std::get<0>(color), std::get<1>(color), std::get<2>(color)});
+        decompressedImage.pixels.push_back(colorTable[index]);
     }
 
     return decompressedImage;

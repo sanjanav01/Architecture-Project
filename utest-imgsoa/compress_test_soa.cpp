@@ -180,6 +180,57 @@ TEST(CompressTestSOA, DeerLarge) {
     }
 }
 
+TEST(MaxLevelPerformanceTestSOA, DeerSmallCompress) {
+  const std::string inputPath = "/Users/kalyani/Documents/CompArch/Input:Output/input/deer-small.ppm";
+  const std::string generatedOutputPath = "/Users/kalyani/Documents/CompArch/Architecture-Project/test-outputs/deer-small-output.cppm";
+
+  Image const originalImage = read_ppm(inputPath);
+
+  // Measure the execution time of compress_soa
+  auto start = std::chrono::high_resolution_clock::now();
+  CompressedImage const compressedImage = compress_soa(originalImage);
+  auto end = std::chrono::high_resolution_clock::now();
+
+  // Write the compressed image to a file (optional step, depending on your needs)
+  write_cppm(generatedOutputPath, compressedImage);
+
+  std::chrono::duration<double> const duration = end - start;
+  double const elapsed_time = duration.count();
+
+  // Expected maximum execution time in seconds
+  double constexpr execution_time = 5.0; // Replace 5.0 with the desired threshold in seconds
+
+  ASSERT_LE(elapsed_time, execution_time)
+      << "Execution time exceeded for deer-small.ppm during compression";
+
+  std::cout << "Execution time for compress_soa for deer-small: " << elapsed_time << " seconds\n";
+}
+TEST(MaxLevelPerformanceTestSOA, DeerLargeCompress) {
+  const std::string inputPath = "/Users/kalyani/Documents/CompArch/Input:Output/input/deer-large.ppm";
+  const std::string generatedOutputPath = "/Users/kalyani/Documents/CompArch/Architecture-Project/test-outputs/deer-large-output.cppm";
+
+  Image const originalImage = read_ppm(inputPath);
+
+  // Measure the execution time of compress_soa
+  auto start = std::chrono::high_resolution_clock::now();
+  CompressedImage const compressedImage = compress_soa(originalImage);
+  auto end = std::chrono::high_resolution_clock::now();
+
+  // Write the compressed image to a file (optional step, depending on your needs)
+  write_cppm(generatedOutputPath, compressedImage);
+
+  std::chrono::duration<double> const duration = end - start;
+  double const elapsed_time = duration.count();
+
+  // Expected maximum execution time in seconds
+  double constexpr execution_time = 12.0; // Replace 5.0 with the desired threshold in seconds
+
+  ASSERT_LE(elapsed_time, execution_time)
+      << "Execution time exceeded for deer-large.ppm during compression";
+
+  std::cout << "Execution time for compress_soa for deer-large: " << elapsed_time << " seconds\n";
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
