@@ -3,3 +3,4 @@ googletest/
 .idea/
 test_resources/input/
 test_resources/outputs/
+test_resources/test_outputs/

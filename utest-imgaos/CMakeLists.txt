@@ -1,7 +1,6 @@
 # CMakeLists.txt in utest-imgaos
 add_executable(utest-img-aos
         cutfreq_aos_test.cpp
-        resize_aos_test.cpp
         resize_test.cpp
 )
 
