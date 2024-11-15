@@ -27,7 +27,11 @@ HeaderFileExtensions: [ 'h', 'hpp' ]
 ImplementationFileExtensions: [ 'cpp']
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 FormatStyle: file
+=======
+FormatStyle: file
+>>>>>>> 2e0fa2c (updates:)
 =======
 FormatStyle: file
 >>>>>>> 2e0fa2c (updates:)

@@ -6,7 +6,11 @@
 TEST(ReadPPMTest, ValidPPMFile) {
     // ppm2.ppm
 <<<<<<< HEAD
+<<<<<<< HEAD
     std::ofstream file("/Users/anchita14/Desktop/Architecture-Project/test_resources/resources/ppm2.ppm", std::ios::binary);
+=======
+    std::ofstream file("/Users/sanjana/Architecture-Project/test_resources/resources/ppm2.ppm", std::ios::binary);
+>>>>>>> 2e0fa2c (updates:)
 =======
     std::ofstream file("/Users/sanjana/Architecture-Project/test_resources/resources/ppm2.ppm", std::ios::binary);
 >>>>>>> 2e0fa2c (updates:)
@@ -28,7 +32,11 @@ TEST(ReadPPMTest, ValidPPMFile) {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     std::string file_path = "/Users/anchita14/Desktop/Architecture-Project/test_resources/resources/ppm2.ppm";
+=======
+    std::string file_path = "/Users/sanjana/Architecture-Project/test_resources/resources/ppm2.ppm";
+>>>>>>> 2e0fa2c (updates:)
 =======
     std::string file_path = "/Users/sanjana/Architecture-Project/test_resources/resources/ppm2.ppm";
 >>>>>>> 2e0fa2c (updates:)
