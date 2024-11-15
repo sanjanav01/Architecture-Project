@@ -8,7 +8,8 @@ static constexpr int MAX_COLOR_VALUE = 255;
 
 // Test if `cutfreq` correctly identifies and removes infrequent colors
 TEST(ImageSOATest, CutFreq_RemovesInfrequentColors) {
-  ImageSOA image(2, 2); // 2x2 image
+  // Initialize ImageSOA with Width, Height, and MaxColorValue
+  ImageSOA image(Width{2}, Height{2}, MaxColorValue{MAX_COLOR_VALUE}); // 2x2 image
 
   // Define colors for each pixel in SOA format
   image.R = {MAX_COLOR_VALUE, 0, 0, 0};  // Red, Green, Green, Blue
@@ -30,7 +31,8 @@ TEST(ImageSOATest, CutFreq_RemovesInfrequentColors) {
 
 // Test if `cutfreq` does not replace colors when all colors meet the threshold
 TEST(ImageSOATest, CutFreq_NoReplacementWhenAllMeetThreshold) {
-  ImageSOA image(2, 2); // 2x2 image
+  // Initialize ImageSOA with Width, Height, and MaxColorValue
+  ImageSOA image(Width{2}, Height{2}, MaxColorValue{MAX_COLOR_VALUE}); // 2x2 image
 
   // Define colors for each pixel in SOA format (all pixels Green)
   image.R = {0, 0, 0, 0};
@@ -47,4 +49,3 @@ TEST(ImageSOATest, CutFreq_NoReplacementWhenAllMeetThreshold) {
     EXPECT_EQ(image.B[i], 0);
   }
 }
-

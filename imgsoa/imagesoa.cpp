@@ -2,20 +2,35 @@
 #include "helpers/helpers.hpp" // Include the shared helper file
 #include <map>
 #include <vector>
-#include "common/image_types.hpp"
 #include <cmath>
 #include <stdexcept>
 #include <algorithm> // for std::clamp
+#include <iostream> // for std::clamp
 
 // Constants for byte sizes based on max color value
-constexpr static int PixelResizeThreshold = 256;
-constexpr static int BytesPerPixel3 = 3;
-constexpr static int BytesPerPixel6 = 6;
+constexpr static int MAX_VAL= 255;
+constexpr static int PixelThreshold= 256;
 
-// Constructor with width and height parameters
-ImageSOA::ImageSOA(int width, int height)
-    : R(static_cast<size_t>(width * height)), G(static_cast<size_t>(width * height)),
-      B(static_cast<size_t>(width * height)), width(width), height(height) {}
+
+
+ImageSOA::ImageSOA(Width width, Height height, MaxColorValue max_color_value)
+    : width(width.value),  // Initialize width
+      height(height.value), // Initialize height
+      current_max_color_value(max_color_value.value), // Initialize max color value
+      R(static_cast<size_t>(width.value * height.value)),      // Initialize R
+      G(static_cast<size_t>(width.value * height.value)),      // Initialize G
+      B(static_cast<size_t>(width.value * height.value))       // Initialize B
+{}
+
+ImageSOA::ImageSOA(Width width, Height height)
+    : width(width.value),  // Initialize width
+      height(height.value), // Initialize height
+      current_max_color_value(MAX_VAL), // Default max color value
+      R(static_cast<size_t>(width.value * height.value)),      // Initialize R
+      G(static_cast<size_t>(width.value * height.value)),      // Initialize G
+      B(static_cast<size_t>(width.value * height.value))       // Initialize B
+{}
+
 
 // Main cutfreq function, which uses shared helper functions for color analysis
 void ImageSOA::cutfreq(int frequency_threshold) {
@@ -32,36 +47,45 @@ void ImageSOA::cutfreq(int frequency_threshold) {
   B = channels.B;
 }
 
-void ImageSOA::maxlevel(Image& image, int new_max_value) {
-    if (new_max_value <= 0) {
-        throw std::invalid_argument("New max value must be positive.");
+void ImageSOA::maxlevel(int new_max_value) {
+  if (new_max_value <= 0) {
+    throw std::invalid_argument("New max value must be positive.");
+  }
+  // Pre-compute scaling factor
+  double const scaling_factor = static_cast<double>(new_max_value) / current_max_color_value;
+  // Scale each RGB component independently
+  for (size_t i = 0; i < R.size(); ++i) {
+    // Apply scaling with rounding
+    R[i] = static_cast<int>(std::floor(static_cast<double>(R[i]) * scaling_factor));
+    G[i] = static_cast<int>(std::floor(static_cast<double>(G[i]) * scaling_factor));
+    B[i] = static_cast<int>(std::floor(static_cast<double>(B[i]) * scaling_factor));
+    // Clamp each channel to ensure it is within [0, new_max_value]
+    R[i] = std::clamp(R[i], 0, new_max_value);
+    G[i] = std::clamp(G[i], 0, new_max_value);
+    B[i] = std::clamp(B[i], 0, new_max_value);
+  }
+
+  // Update the current max color value to the new max value
+  current_max_color_value = new_max_value;
+
+  // Inform output handling about byte representation
+  size_t const total_pixels = static_cast<size_t>(width) * static_cast<size_t>(height);
+  if (current_max_color_value < PixelThreshold) {
+    // 3 bytes per pixel
+    if (R.capacity() < total_pixels || G.capacity() < total_pixels || B.capacity() < total_pixels) {
+      R.resize(total_pixels);
+      G.resize(total_pixels);
+      B.resize(total_pixels);
     }
-    // Pre-compute scaling factor for efficiency
-    double const scaling_factor = static_cast<double>(new_max_value) / image.max_color_value;
-    // Scale each RGB component for each pixel in the Image
-    for (auto& pixel : image.pixels) {
-        // Apply scaling
-        pixel.r = static_cast<uint16_t>(std::floor(static_cast<double>(pixel.r) * scaling_factor));
-        pixel.g = static_cast<uint16_t>(std::floor(static_cast<double>(pixel.g) * scaling_factor));
-        pixel.b = static_cast<uint16_t>(std::floor(static_cast<double>(pixel.b) * scaling_factor));
-
-        // Clamp each color channel to ensure it is within [0, new_max_value]
-        pixel.r = std::clamp(pixel.r, static_cast<uint16_t>(0), static_cast<uint16_t>(new_max_value));
-        pixel.g = std::clamp(pixel.g, static_cast<uint16_t>(0), static_cast<uint16_t>(new_max_value));
-        pixel.b = std::clamp(pixel.b, static_cast<uint16_t>(0), static_cast<uint16_t>(new_max_value));
+    std::cout << "Switching to 3-byte representation (max color value < 256).\n";
+  } else {
+    // 6 bytes per pixel
+    if (R.capacity() < 2 * total_pixels || G.capacity() < 2 * total_pixels || B.capacity() < 2 * total_pixels) {
+      R.resize(2 * total_pixels);
+      G.resize(2 * total_pixels);
+      B.resize(2 * total_pixels);
     }
-
-    // Update the max_color_value in the image
-    image.max_color_value = new_max_value;
-
-    // Adjust internal storage based on pixel size requirement
-    const size_t total_pixels = static_cast<size_t>(image.width) * static_cast<size_t>(image.height);
-    const size_t required_size = (new_max_value >= PixelResizeThreshold)
-                                 ? total_pixels * BytesPerPixel6
-                                 : total_pixels * BytesPerPixel3;
-
-    // Resize the pixel vector if required
-    if (image.pixels.size() * sizeof(Pixel) < required_size) {
-        image.pixels.resize(required_size / sizeof(Pixel));
-    }
+    std::cout << "Switching to 6-byte representation (max color value >= 256).\n";
+  }
 }
+

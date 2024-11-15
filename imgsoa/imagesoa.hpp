@@ -1,27 +1,41 @@
-// imagesoa.hpp
-
 #ifndef IMAGESOA_HPP
 #define IMAGESOA_HPP
 
 #include <vector>
-#include "common/image_types.hpp"
+
+// Wrapper types for safer parameter passing
+struct Width {
+  int value;
+};
+
+struct Height {
+  int value;
+};
+
+struct MaxColorValue {
+  int value;
+};
 
 class ImageSOA {
   public:
-  std::vector<int> R;
-  std::vector<int> G;
-  std::vector<int> B;
-  int width;
-  int height;
+  int width;                    // First member
+  int height;                   // Second member
+  int current_max_color_value;  // Third member
+  std::vector<int> R;           // Fourth member
+  std::vector<int> G;           // Fifth member
+  std::vector<int> B;           // Sixth member
 
   // Constructor to initialize the image dimensions
-  ImageSOA(int width, int height);
+  ImageSOA(Width width, Height height, MaxColorValue max_color_value);
+
+  // Overloaded constructor for cases without max_color_value
+  ImageSOA(Width width, Height height);
 
   // Function to remove infrequent colors
   void cutfreq(int frequency_threshold);
-  static void maxlevel(Image & image, int new_max_value);
 
-
+  // Function to apply maxlevel scaling
+  void maxlevel(int new_max_value);
 };
 
 #endif // IMAGESOA_HPP
