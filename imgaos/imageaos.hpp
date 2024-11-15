@@ -14,5 +14,7 @@ public:
 
     void cutfreq(int frequency_threshold);
     static Image resize_aos(const Image& image, int new_width, int new_height);
+
+
 };
 #endif // IMAGEAOS_HPP

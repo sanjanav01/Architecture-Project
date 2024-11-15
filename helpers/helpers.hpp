@@ -15,6 +15,7 @@ struct ColorChannels {
 
 bool compareImages(const std::string& file1, const std::string& file2);
 bool compareImagesByPixel(const Image& image1, const Image& image2);
+bool validateResizedImage(const Image& resized_image, int expected_width, int expected_height, const Image& reference_image);
 
 // Helper function declarations
 std::map<std::tuple<int, int, int>, int> calculateColorFrequencies(

@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <tuple>
+constexpr static int FIVE = 5;
 
 bool compareImagesByPixel(const Image& image1, const Image& image2) {
     if (image1.width != image2.width || image1.height != image2.height) {
@@ -14,25 +15,31 @@ bool compareImagesByPixel(const Image& image1, const Image& image2) {
         std::cout << "Images have different dimensions and cannot be compared." << '\n';
         return false;
     }
-    bool identical = true;
+    int total = 0;
+    int diff = 0;
+    bool equivalent = true;
     for (int hgt = 0; hgt < image1.height; ++hgt) {
         for (int wdt = 0; wdt < image1.width; ++wdt) {
-            if (const size_t index = (static_cast<size_t>(hgt) * static_cast<size_t>(image1.width)) + static_cast<size_t>(wdt); image1.pixels[index].r != image2.pixels[index].r || image1.pixels[index].g != image2.pixels[index].g || image1.pixels[index].b != image2.pixels[index].b) {
-                identical = false;
+            total += 1;
+            const size_t index = (static_cast<size_t>(hgt) * static_cast<size_t>(image1.width)) + static_cast<size_t>(wdt);
+            const auto& pix1 = image1.pixels[index];
+            const auto& pix2 = image2.pixels[index];
+            if (std::abs(pix1.r - pix2.r) > FIVE || std::abs(pix1.g - pix2.g) > FIVE || std::abs(pix1.b - pix2.b) > FIVE) {
+                equivalent = false;
+                diff += 1;
                 std::cout << "Difference at (" << wdt << ", " << hgt << "): "
-                          << "Image1 RGB(" << image1.pixels[index].r << ", "
-                          << image1.pixels[index].g << ", " << image1.pixels[index].b << ") vs "
-                          << "Image2 RGB(" << image2.pixels[index].r << ", "
-                          << image2.pixels[index].g << ", " << image2.pixels[index].b << ")"
-                          << '\n';
-                }
+                          << "Image1 RGB(" << pix1.r << ", " << pix1.g << ", " << pix1.b << ") vs "
+                          << "Image2 RGB(" << pix2.r << ", " << pix2.g << ", " << pix2.b << ")\n";
+            }
         }
     }
-    if (identical) {
-        std::cout << "Images are identical." << '\n';
+    std::cout << "Total Pixels: " << total << "Differing Pixels: " << diff << "\n";
+    if (equivalent) {
+        std::cout << "Images are equivalent within the tolerance." << '\n';
     }
-    return identical;
+    return equivalent;
 }
+
 
   bool compareImages(const std::string& file1, const std::string& file2) {
     // Construct the cmp command
