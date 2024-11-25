@@ -1,0 +1,5 @@
+if(EXISTS "/Users/sanjana/Architecture-Project/build/utest-imgsoa/utest-img-soa[1]_tests.cmake")
+  include("/Users/sanjana/Architecture-Project/build/utest-imgsoa/utest-img-soa[1]_tests.cmake")
+else()
+  add_test(utest-img-soa_NOT_BUILT utest-img-soa_NOT_BUILT)
+endif()

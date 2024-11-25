@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "common/binaryio.hpp"
-#include "imagesoa.hpp"
+#include "imgsoa/imagesoa.hpp"
 #include "helpers.hpp"
 //constexpr static int FIVE = 5;
 //constexpr static int TEN = 10;
@@ -8,36 +8,7 @@ constexpr static int HUND = 100;
 constexpr static int THOUS = 1000;
 constexpr static int EIGHTTHOUS = 8000;
 constexpr static double execution_time = 33.0;
-namespace {
-    Image convertToImage(const ImageSOA& soa) {
-        Image image;
-        image.width = soa.width;
-        image.height = soa.height;
-        image.pixels.resize(static_cast<size_t>(soa.width) * static_cast<size_t>(soa.height));
-        for (size_t i = 0; i < image.pixels.size(); ++i) {
-            image.pixels[i].r = static_cast<uint16_t>(
-                std::clamp(soa.R[i], 0, static_cast<int>(std::numeric_limits<uint16_t>::max()))
-            );
-            image.pixels[i].g = static_cast<uint16_t>(
-                std::clamp(soa.G[i], 0, static_cast<int>(std::numeric_limits<uint16_t>::max()))
-            );
-            image.pixels[i].b = static_cast<uint16_t>(
-                std::clamp(soa.B[i], 0, static_cast<int>(std::numeric_limits<uint16_t>::max()))
-            );
-        }
-        return image;
-    }
-    // Convert Image (AOS) to ImageSOA
-    ImageSOA convertToSOA(const Image& image) {
-        ImageSOA soa(Width{image.width}, Height{image.height}, MaxColorValue{image.max_color_value});
-        for (size_t i = 0; i < image.pixels.size(); ++i) {
-            soa.R[i] = image.pixels[i].r;
-            soa.G[i] = image.pixels[i].g;
-            soa.B[i] = image.pixels[i].b;
-        }
-        return soa;
-    }
-}
+
 
 TEST(DeerSmall, TestDeerSmallResize1000) {
     std::string const inputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/input/deer-small.ppm";

@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libcommon.a CMakeFiles/common.dir/progargs.cpp.o CMakeFiles/common.dir/binary.cpp.o CMakeFiles/common.dir/metadata.cpp.o CMakeFiles/common.dir/__/helpers/helpers.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libcommon.a

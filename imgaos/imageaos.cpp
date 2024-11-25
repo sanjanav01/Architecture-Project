@@ -5,7 +5,7 @@
 #include "common/image_types.hpp"
 #include <cmath>
 #include <stdexcept>
-#include <algorithm> // for std::clamp
+#include <unordered_map>
 
 // constexpr static int MaxByteValue = 255;
  constexpr static int PixelResizeThreshold = 256;

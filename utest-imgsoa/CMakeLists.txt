@@ -5,7 +5,6 @@ add_executable(utest-img-soa
         maxlevel_test_soa.cpp
         compress_test_soa.cpp
         resize_test.cpp
-        ../imtool-soa/main.cpp
         # Assuming the test file name
 )
 

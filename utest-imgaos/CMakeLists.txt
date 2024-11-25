@@ -6,6 +6,7 @@ add_executable(utest-img-aos
         ../helpers/helpers.cpp
         compress_test_aos.cpp
         resize_test.cpp
+        ../imgsoa/imagesoa.cpp
 )
 
 target_link_libraries(utest-img-aos

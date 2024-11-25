@@ -48,17 +48,6 @@ namespace {
     }
   };
 
-  // Helper: Convert Image (AOS) to ImageSOA
-  ImageSOA convertToSOA(const Image& image) {
-    ImageSOA soaImage(Width{image.width}, Height{image.height}, MaxColorValue{image.max_color_value});
-    for (size_t i = 0; i < image.pixels.size(); ++i) {
-      soaImage.R[i] = image.pixels[i].r;
-      soaImage.G[i] = image.pixels[i].g;
-      soaImage.B[i] = image.pixels[i].b;
-    }
-    return soaImage;
-  }
-
   // Helper: Create color table and map unique colors to indices
   void createColorTable(const ImageSOA& soaImage,
                           std::unordered_map<std::tuple<uint16_t, uint16_t, uint16_t>, uint32_t, TupleHash>& colorMap,

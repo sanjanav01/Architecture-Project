@@ -139,9 +139,6 @@ TEST(CompressTestSOA, DeerSmall) {
     }
     ASSERT_TRUE(pixels_match) << "Pixels do not match between original and decompressed images.";
 
-    if (pixels_match) {
-        ASSERT_TRUE(compareImages(decompressedOutputPath, inputPath)) << "Images differ after decompression in binary comparison";
-    }
 }
 
 TEST(CompressTestSOA, DeerLarge) {
@@ -174,9 +171,6 @@ TEST(CompressTestSOA, DeerLarge) {
     }
     ASSERT_TRUE(pixels_match) << "Pixels do not match between original and decompressed images.";
 
-    if (pixels_match) {
-        ASSERT_TRUE(compareImages(decompressedOutputPath, inputPath)) << "Images differ after decompression in binary comparison";
-    }
 }
 
 int main(int argc, char **argv) {

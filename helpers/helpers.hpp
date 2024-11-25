@@ -14,7 +14,10 @@ struct ColorChannels {
   std::vector<int> B;
 };
 
-bool compareImages(const std::string& file1, const std::string& file2);
+// bool compareImages(const std::string& file1, const std::string& file2);
+
+Image convertToImage(const ImageSOA& soa);
+ImageSOA convertToSOA(const Image& image);
 
 std::map<std::tuple<int, int, int>, int> calculateColorFrequencies(
     const ColorChannels& channels);

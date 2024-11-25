@@ -3,13 +3,11 @@
 #include <cmath>
 #include <limits>
 #include <cstdlib>
-#include <string>
 #include <iostream>
 #include <tuple>
 #include <imgsoa/imagesoa.hpp>
 constexpr static int FIVE = 5;
 
-namespace {
     // Convert SOA back to Image for output comparison
     Image convertToImage(const ImageSOA& soa) {
         Image image;
@@ -20,13 +18,13 @@ namespace {
 
         for (size_t i = 0; i < image.pixels.size(); ++i) {
             image.pixels[i].r = static_cast<uint16_t>(
-                std::clamp(soa.R[i], 0, static_cast<int>(std::numeric_limits<uint16_t>::max()))
+                std::max(0, std::min(static_cast<int>(soa.R[i]), static_cast<int>(std::numeric_limits<uint16_t>::max())))
             );
             image.pixels[i].g = static_cast<uint16_t>(
-                std::clamp(soa.G[i], 0, static_cast<int>(std::numeric_limits<uint16_t>::max()))
+                std::max(0, std::min(static_cast<int>(soa.G[i]), static_cast<int>(std::numeric_limits<uint16_t>::max())))
             );
             image.pixels[i].b = static_cast<uint16_t>(
-                std::clamp(soa.B[i], 0, static_cast<int>(std::numeric_limits<uint16_t>::max()))
+                std::max(0, std::min(static_cast<int>(soa.B[i]), static_cast<int>(std::numeric_limits<uint16_t>::max())))
             );
         }
         return image;
@@ -42,7 +40,6 @@ namespace {
         }
         return soa;
     }
-}
 
 bool compareImageAndSOA(const Image& image, const ImageSOA& soa_image) {
     if (image.width != soa_image.width || image.height != soa_image.height) {
@@ -105,12 +102,12 @@ bool compareImagesByPixel(const Image& image1, const Image& image2) {
 }
 
 
-bool compareImages(const std::string& file1, const std::string& file2) {
-    std::string const command = "cmp -s " + file1 + " " + file2;
-    // NOLINTNEXTLINE(cert-env33-c, misc-system-command)
-    int const result = std::system(command.c_str());
-    return result == 0;
-}
+// bool compareImages(const std::string& file1, const std::string& file2) {
+//     std::string const command = "cmp -s " + file1 + " " + file2;
+//     // NOLINTNEXTLINE(cert-env33-c, misc-system-command)
+//     int const result = std::system(command.c_str());
+//     return result == 0;
+// }
 
 std::map<std::tuple<int, int, int>, int> calculateColorFrequencies(
     const ColorChannels& channels) {
