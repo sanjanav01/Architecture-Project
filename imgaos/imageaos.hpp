@@ -35,8 +35,7 @@ class ImageAOS {
   static Image resize(const Image& image, int new_width, int new_height);
 };
 
-// Function declaration for compress_aos, which now returns CompressedImage
 CompressedImage compress_aos(const Image& image);
 Image decompress(const CompressedImage& compressedImage);
-#endif // IMAGEAOS_HPP
+#endif
 

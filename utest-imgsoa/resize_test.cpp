@@ -41,7 +41,7 @@ namespace {
 
 TEST(DeerSmall, TestDeerSmallResize1000) {
     std::string const inputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/input/deer-small.ppm";
-    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize 2/deer-small-1000.ppm";
+    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize/deer-small-1000.ppm";
     std::string const generatedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/test_outputs/soa_deersmall_resized1000.ppm";
 
     Image const inputImage = read_ppm(inputPath);
@@ -56,7 +56,7 @@ TEST(DeerSmall, TestDeerSmallResize1000) {
 
 TEST(DeerSmall, TestDeerSmallResize100) {
     std::string const inputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/input/deer-small.ppm";
-    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize 2/deer-small-100.ppm";
+    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize/deer-small-100.ppm";
     std::string const generatedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/test_outputs/soa_deersmall_resized100.ppm";
 
     Image const inputImage = read_ppm(inputPath);
@@ -71,7 +71,7 @@ TEST(DeerSmall, TestDeerSmallResize100) {
 
 TEST(DeerLarge, TestDeerLargeResize100) {
     std::string const inputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/input/deer-large.ppm";
-    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize 2/deer-large-100.ppm";
+    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize/deer-large-100.ppm";
     std::string const generatedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/test_outputs/soa_deerlarge_resized100.ppm";
 
     Image const inputImage = read_ppm(inputPath);
@@ -86,7 +86,7 @@ TEST(DeerLarge, TestDeerLargeResize100) {
 
 TEST(DeerLarge, TestDeerLargeResize1000) {
     std::string const inputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/input/deer-large.ppm";
-    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize 2/deer-large-1000.ppm";
+    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize/deer-large-1000.ppm";
     std::string const generatedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/test_outputs/soa_deerlarge_resized1000.ppm";
 
     Image const inputImage = read_ppm(inputPath);
@@ -101,7 +101,7 @@ TEST(DeerLarge, TestDeerLargeResize1000) {
 
 TEST(LakeSmall, TestLakeSmallResize1000) {
     std::string const inputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/input/lake-small.ppm";
-    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize 2/lake-small-1000.ppm";
+    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize/lake-small-1000.ppm";
     std::string const generatedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/test_outputs/soa_lakesmall_resized1000.ppm";
 
     Image const inputImage = read_ppm(inputPath);
@@ -116,7 +116,7 @@ TEST(LakeSmall, TestLakeSmallResize1000) {
 
 TEST(LakeSmall, TestLakeSmallResize100) {
     std::string const inputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/input/lake-small.ppm";
-    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize 2/lake-small-100.ppm";
+    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize/lake-small-100.ppm";
     std::string const generatedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/test_outputs/soa_lakesmall_resized100.ppm";
 
     Image const inputImage = read_ppm(inputPath);
@@ -131,7 +131,7 @@ TEST(LakeSmall, TestLakeSmallResize100) {
 
 TEST(LakeLarge, TestLakeLargeResize100) {
     std::string const inputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/input/lake-large.ppm";
-    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize 2/lake-large-100.ppm";
+    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize/lake-large-100.ppm";
     std::string const generatedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/test_outputs/soa_lakelarge_resized100.ppm";
 
     Image const inputImage = read_ppm(inputPath);
@@ -146,7 +146,7 @@ TEST(LakeLarge, TestLakeLargeResize100) {
 
 TEST(LakeLarge, TestLakeLargeResize1000) {
     std::string const inputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/input/lake-large.ppm";
-    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize 2/lake-large-1000.ppm";
+    std::string const expectedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/outputs/resize/lake-large-1000.ppm";
     std::string const generatedOutputPath = "/Users/shriyasingh/Desktop/Architecture-Project/test_resources/test_outputs/soa_lakelarge_resized1000.ppm";
 
     Image const inputImage = read_ppm(inputPath);

@@ -72,7 +72,6 @@ bool compareImagesByPixel(const Image& image1, const Image& image2) {
 
 bool compareImages(const std::string& file1, const std::string& file2) {
     std::string const command = "cmp -s " + file1 + " " + file2;
-    // NOLINTNEXTLINE(cert-env33-c, misc-system-command)
     int const result = std::system(command.c_str());
     return result == 0;
 }
