@@ -9,6 +9,41 @@
 #include <imgsoa/imagesoa.hpp>
 constexpr static int FIVE = 5;
 
+namespace {
+    // Convert SOA back to Image for output comparison
+    Image convertToImage(const ImageSOA& soa) {
+        Image image;
+        image.width = soa.width;
+        image.height = soa.height;
+        image.max_color_value = soa.current_max_color_value; // Use SOA's max color value
+        image.pixels.resize(static_cast<size_t>(soa.width) * static_cast<size_t>(soa.height));
+
+        for (size_t i = 0; i < image.pixels.size(); ++i) {
+            image.pixels[i].r = static_cast<uint16_t>(
+                std::clamp(soa.R[i], 0, static_cast<int>(std::numeric_limits<uint16_t>::max()))
+            );
+            image.pixels[i].g = static_cast<uint16_t>(
+                std::clamp(soa.G[i], 0, static_cast<int>(std::numeric_limits<uint16_t>::max()))
+            );
+            image.pixels[i].b = static_cast<uint16_t>(
+                std::clamp(soa.B[i], 0, static_cast<int>(std::numeric_limits<uint16_t>::max()))
+            );
+        }
+        return image;
+    }
+
+    // Convert Image (AOS) to ImageSOA
+    ImageSOA convertToSOA(const Image& image) {
+        ImageSOA soa(Width{image.width}, Height{image.height}, MaxColorValue{image.max_color_value});
+        for (size_t i = 0; i < image.pixels.size(); ++i) {
+            soa.R[i] = image.pixels[i].r;
+            soa.G[i] = image.pixels[i].g;
+            soa.B[i] = image.pixels[i].b;
+        }
+        return soa;
+    }
+}
+
 bool compareImageAndSOA(const Image& image, const ImageSOA& soa_image) {
     if (image.width != soa_image.width || image.height != soa_image.height) {
         std::cout << "diff dimensions. Image: " << image.width << "x" << image.height
