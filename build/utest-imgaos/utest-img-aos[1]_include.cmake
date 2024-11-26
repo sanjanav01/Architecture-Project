@@ -1,5 +1,0 @@
-if(EXISTS "/Users/sanjana/Architecture-Project/build/utest-imgaos/utest-img-aos[1]_tests.cmake")
-  include("/Users/sanjana/Architecture-Project/build/utest-imgaos/utest-img-aos[1]_tests.cmake")
-else()
-  add_test(utest-img-aos_NOT_BUILT utest-img-aos_NOT_BUILT)
-endif()

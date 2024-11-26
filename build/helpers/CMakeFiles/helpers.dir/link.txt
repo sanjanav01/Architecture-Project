@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libhelpers.a CMakeFiles/helpers.dir/helpers.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libhelpers.a
