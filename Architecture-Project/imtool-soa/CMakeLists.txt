@@ -1,2 +1,0 @@
-add_executable(imtool-soa main.cpp)
-target_link_libraries(imtool-soa imagesoa common helpers)
